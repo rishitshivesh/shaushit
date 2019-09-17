@@ -149,10 +149,6 @@ void Menu::Highlight(int l, int b,int x , int y , char a)
 }
 /*void Drawmenu()
 {
-};
-void admin()
-{
-
 }*/
 void main()
 {
