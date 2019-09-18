@@ -9,8 +9,8 @@ class Menu
 {
 	 public:
 	   void Drawbox(int l,int b,int x ,int y,char text[]);
-	   void EnterID(int l,int b,int x ,int y, char id[]);
-	   void EnterPass(int l, int b, int x, int y, char pass[]);
+	   void EnterID(int l,int b,int x ,int y, char id[80]);
+	   void EnterPass(int l, int b, int x, int y, char pass[80]);
 	   void Admin();
 	   void Highlight(int l, int b,int x , int y , char a);
 	    int page;
@@ -56,8 +56,12 @@ void Menu::Admin()
 	char id[80], pass[80];
 	EnterID(20,1,25,10,id);
 	EnterPass(20,1,25,15,pass);
+	gotoxy(25,20);
+	cprintf(id);
+	gotoxy(25,22);
+	cprintf(pass);
 }
-void Menu::EnterID(int l,int b,int x ,int y, char id[])
+void Menu::EnterID(int l,int b,int x ,int y, char id[80])
 {
    _setcursortype(_SOLIDCURSOR);
    textcolor(YELLOW);
@@ -91,11 +95,13 @@ void Menu::EnterID(int l,int b,int x ,int y, char id[])
    {
 	r=getch();
 	id[k]=r;
-	cprintf(r);
-	k++;
-   }while(char(r)!=13);
+	cout<<r;
+		k++;
+   }while(int(r)!=13);
+   id[k-1]='\0';
+   cout<<'\b';
 }
-void Menu::EnterPass(int l,int b,int x ,int y, char pass[])
+void Menu::EnterPass(int l,int b,int x ,int y, char pass[80])
 {
    _setcursortype(_SOLIDCURSOR);
    textcolor(YELLOW);
@@ -129,10 +135,11 @@ void Menu::EnterPass(int l,int b,int x ,int y, char pass[])
    {
 	r=getch();
 	pass[k]=r;
-	if(int(r)!=13);
+	if(int(r)!=13)
 		cprintf("*");
 	k++;
    }while(int(r)!=13);
+   pass[k-1]='\0';
 }
 
 void Menu::Highlight(int l, int b,int x , int y , char a)
@@ -154,4 +161,5 @@ void main()
 	clrscr();
 	Menu a;
 	a.Admin();
+	getch();
 }
