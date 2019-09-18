@@ -21,7 +21,18 @@ class Menu
 };
 
 
-
+void Menu::PrintLogo()
+{
+	gotoxy(15,1);
+	cout << char(201) << char(205) << char(187) << ' ' << char(201) << char(205) << char(187) << ' ' << char(201) << char(205) << char(205) << ' ' << char(201) << char(205) << char(187) << ' ' << char(203) << char(205) << char(187) << ' ' << char(201) << char(205) << char(205) << ' ';
+	cout << char(201) << char(203) << char(187) << ' ' << char(201) << char(205) << char(187) << ' ' << char(201) << char(205) << char(205) << ' ' << char(205) << char(203) << char(205) << ' ' << char(201) << char(205) << char(205) << ' ' << char(201) << char(205) << char(187);
+	gotoxy(15,2);
+	cout << char(204) << char(205) << char(185) << ' ' << char(204) << char(203) << char(188) << ' ' << char(186) << "   " << char(204) << char(205) << char(185) << ' ' << char(186) << ' ' << char(186) << ' ' << char(204) << char(205) << char(205) << ' ';
+	cout << char(186) << char(186) << char(186) << ' ' << char(204) << char(205) << char(185) << ' ' << char(200) << char(205) << char(187) << "  " << char(186) << "  " << char(204) << char(205) << char(205) << ' ' << char(204) << char(203) << char(188);
+	gotoxy(15,3);
+	cout << char(186) << ' ' << char(186) << ' ' << char(186) << char(200) << char(205) << ' ' << char(200) << char(205) << char(205) << ' ' << char(186) << ' ' << char(186) << ' ' << char(202) << char(205) << char(188) << ' ' << char(200) << char(205) << char(205) << ' ';
+	cout << char(186) << ' ' << char(186) << ' ' << char(186) << ' ' << char(186) << ' ' << char(205) << char(205) << char(188) << "  " << char(186) << "  " << char(200) << char(205) << char(205) << ' ' << char(186) << char(200) << char(205);
+}
 void Menu::Drawbox(int l,int b,int x ,int y,char text[])
 {
    textcolor(YELLOW);
@@ -160,6 +171,7 @@ void main()
 {
 	clrscr();
 	Menu a;
+	a.PrintLogo();
 	a.Admin();
 	getch();
 }
