@@ -9,8 +9,8 @@ class Menu
 {
 	 public:
 	   void Drawbox(int l,int b,int x ,int y,char text[]);
-	   void EnterID(int l,int b,int x ,int y);
-	   void EnterPass(int l, int b, int x, int y);
+	   void EnterID(int l,int b,int x ,int y, char id[]);
+	   void EnterPass(int l, int b, int x, int y, char pass[]);
 	   void Admin();
 	   void Highlight(int l, int b,int x , int y , char a);
 	    int page;
@@ -53,12 +53,13 @@ void Menu::Drawbox(int l,int b,int x ,int y,char text[])
 }
 void Menu::Admin()
 {
-	EnterID(20,1,2,2);
-	EnterPass(20,1,2,2);
+	char id[80], pass[80];
+	EnterID(20,1,25,10,id);
+	EnterPass(20,1,25,15,pass);
 }
-void Menu::EnterID(int l,int b,int x ,int y)
+void Menu::EnterID(int l,int b,int x ,int y, char id[])
 {
-   char z[80];
+   _setcursortype(_SOLIDCURSOR);
    textcolor(YELLOW);
    int n = y;
    int a = l-1;
@@ -85,20 +86,18 @@ void Menu::EnterID(int l,int b,int x ,int y)
    gotoxy(x+2,y+(b%2));
    textcolor(RED);
    char r;
+   int k=0;
    do
    {
-	int k=0;
 	r=getch();
-	z[k]=r;
-	cprintf(z);
+	id[k]=r;
+	cprintf(r);
 	k++;
    }while(char(r)!=13);
-   EnterPass(20,1,2,2);
 }
-void Menu::EnterPass(int l,int b,int x ,int y)
+void Menu::EnterPass(int l,int b,int x ,int y, char pass[])
 {
-   y+=5;
-   char z[80];
+   _setcursortype(_SOLIDCURSOR);
    textcolor(YELLOW);
    int n = y;
    int a = l-1;
@@ -125,11 +124,11 @@ void Menu::EnterPass(int l,int b,int x ,int y)
    gotoxy(x+2,y+(b%2));
    textcolor(RED);
    char r;
+   int k=0;
    do
    {
-	int k=0;
 	r=getch();
-	z[k]=r;
+	pass[k]=r;
 	if(int(r)!=13);
 		cprintf("*");
 	k++;
@@ -155,5 +154,4 @@ void main()
 	clrscr();
 	Menu a;
 	a.Admin();
-	getch();
 }
