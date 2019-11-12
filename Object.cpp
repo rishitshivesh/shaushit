@@ -7,7 +7,7 @@
 #include <ctype.h>
 #include <iomanip.h>
 #include <math.h>
-
+#include <time.h>
 const int UP = 72;
 const int DOWN = 80;
 const int LEFT = 75;
@@ -65,7 +65,6 @@ public:
     char Username[50];
     char Name[50], EMail[25];
     char Phone[10];
-
     //CUSTOMER(char *user,char *pass);
     void inputdata(char *name, char *username,char *password, char *email, char *phone);
     int CheckPassword(char *password);
@@ -77,7 +76,7 @@ int CUSTOMER::CheckPassword(char *password)
     if(strcmp(Password,password)==0)
 	return 1;
     else{
-        return 0;
+	return 0;
     }
 }
 void CUSTOMER::inputdata(char *name, char *username,char *password, char *email, char *phone)
@@ -229,7 +228,7 @@ void TextBox::Draw()
     gotoxy(X+2,Y+(Height%2));
     textcolor(WHITE);
     if(Hide)
-    cprintf(HiddenText);    
+    cprintf(HiddenText);
     else{cprintf(Caption);}
 }
 
@@ -242,7 +241,7 @@ void TextBox::Highlight(char a)
 	for(int i = 0;i<Width;i++)
             w[i] = a;
 	textcolor(RED);
-        gotoxy(X,Y+Height+1);
+	gotoxy(X,Y+Height+1);
         cprintf(w);
 	textcolor(WHITE);
     }
@@ -255,7 +254,7 @@ void TextBox::Highlight(char a)
 	cprintf(w);
         textcolor(WHITE);
 
-        int ch;
+	int ch;
         int len=strlen(Caption),curpos,curx;
 	curpos=len;
 
@@ -268,7 +267,7 @@ void TextBox::Highlight(char a)
 	    ch=getch();
             // if(ch==0)
 	    // { ch=getch();
-            switch (ch)
+	    switch (ch)
             {
 		case 8: //backspace
                     if(len>0)
@@ -281,7 +280,7 @@ void TextBox::Highlight(char a)
 		break;
             }
 	    //}//if(ch==0) ended
-            if(isprint(ch))
+	    if(isprint(ch))
             {
 		Caption[curpos]=ch;
                 HiddenText[curpos]='*';
@@ -294,7 +293,7 @@ void TextBox::Highlight(char a)
 		    Draw();
                     break;
 		}
-                else
+		else
                 {
 		    curpos++;
                     len++;
@@ -725,7 +724,7 @@ void CustomerSignUp()
 	    {
 		gotoxy(15,20);
 		cprintf("User Exists. Press Enter to go to LoginPage!");
-                if(getch()==13)
+		if(getch()==13)
                     Customerlogin();
             }
             else
@@ -738,7 +737,7 @@ void CustomerSignUp()
 	    }
 	}
 	break;
-        default:
+	default:
             mCustomerSignUp.EnableClickHandler(currentitem);
         break;
     }
@@ -777,7 +776,7 @@ void Customerlogin()
 
 	    }
 	    else{
-                gotoxy(20,14);
+		gotoxy(20,14);
                 cprintf("Incorrect Password or Username,Press Enter to Retry");
                 if(getch()==13)
                     Customerlogin();
@@ -1162,7 +1161,7 @@ void Database_Settings()
             mDatabase_Settings.EnableClickHandler(currentitem);
 	break;
     }
-    
+
 }
 void Theatre_Settings()
 {
@@ -1279,7 +1278,7 @@ void seats(int Seats_Needed)
     i = 0;
     seat[0]->Highlight();
     if(manualmode)
-        seat[i]->Draw(LIGHTGREEN);
+	seat[i]->Draw(LIGHTGREEN);
     else{
 	for(j=i;j<i+Seats_Needed&&j<25;j++)
         {
@@ -1292,7 +1291,7 @@ void seats(int Seats_Needed)
         int a = getch();
         
         switch(a)
-        {
+	{
             case 0:
 	    {
                 a=getch();
@@ -1305,7 +1304,7 @@ void seats(int Seats_Needed)
                             {
                                 //seat[j]->Select=false;
                                 seat[j]->Draw();
-                            }
+			    }
                             seat[++i]->Highlight();
 			    seat[i]->Draw(LIGHTGREEN);
                             if(!manualmode){
@@ -1318,7 +1317,7 @@ void seats(int Seats_Needed)
                         }
                     }
                     break;
-                    case LEFT:
+		    case LEFT:
                     {
 			if(i>0){
                             for(j=0;j<25;j++)
@@ -1331,7 +1330,7 @@ void seats(int Seats_Needed)
                             if(!manualmode){
                                 for(j=i;j<i+Seats_Needed&&j<25;j++)
                                 {
-                                    seat[j]->Draw(LIGHTGREEN);
+				    seat[j]->Draw(LIGHTGREEN);
                                 }
 			    }
                             seat[i]->Highlight();
@@ -1344,7 +1343,7 @@ void seats(int Seats_Needed)
                         {
                             for(j=0;j<25;j++)
                             {
-                                //seat[j]->Select=false;
+				//seat[j]->Select=false;
                                 seat[j]->Draw();
 			    }
                             i-=5;
@@ -1357,7 +1356,7 @@ void seats(int Seats_Needed)
                                 }
                             }
                             seat[i]->Highlight();
-                        }
+			}
                     }
 		    break;
                     case DOWN:
@@ -1370,7 +1369,7 @@ void seats(int Seats_Needed)
                                 seat[j]->Draw();
                             }
                             i+=5;
-                            seat[i]->Highlight(); 
+			    seat[i]->Highlight();
                             seat[i]->Draw(LIGHTGREEN);
 			    if(!manualmode){
                                 for(j=i;j<i+Seats_Needed&&j<25;j++)
@@ -1383,7 +1382,7 @@ void seats(int Seats_Needed)
                     }
                     break;
                 }
-            }
+	    }
             break;
 	    case ENTER:
             {
@@ -1396,7 +1395,7 @@ void seats(int Seats_Needed)
                             seat[j]->Select=true;
                             seat[j]->Draw();
                         }
-                    }
+		    }
                     window(20,24,50,25);
 		    clrscr();
                     gotoxy(1,1);
@@ -1409,7 +1408,7 @@ void seats(int Seats_Needed)
                             seat[j]->Select=false;
                             seat[j]->Draw();
                         }
-                        window(20,24,50,25);
+			window(20,24,50,25);
                         clrscr();
 			window(1,1,80,25);
                         l=1;
@@ -1422,7 +1421,7 @@ void seats(int Seats_Needed)
                         {
                             seat[j]->Select=false;
                         }
-                        EnterSeats();
+			EnterSeats();
                     }
 		}
                 else{           //MANUAL MODE
@@ -1435,7 +1434,7 @@ void seats(int Seats_Needed)
                             seats_selected++;
                         }    
                     }
-                    else{
+		    else{
                         window(20,24,50,25);
 		    clrscr();
                     gotoxy(1,1);
@@ -1448,47 +1447,47 @@ void seats(int Seats_Needed)
                             {
                                 seat[j]->Occupied=true;
                                 seat[j]->Select=false;
-                                seat[j]->Draw();
+				seat[j]->Draw();
                             }                           
 			}
-                        window(20,24,50,25);
-                        clrscr();
-                        window(1,1,80,25);
-                        l=1;
-                        break;
-                    }
-                    else{
-                        window(1,1,80,25);
-                        clrscr();
-                        for(j=0;j<25;j++)
-                        {
-                            seat[j]->Select=false;
+			window(20,24,50,25);
+			clrscr();
+			window(1,1,80,25);
+			l=1;
+			break;
+		    }
+		    else{
+			window(1,1,80,25);
+			clrscr();
+			for(j=0;j<25;j++)
+			{
+			    seat[j]->Select=false;
 			}
-                        EnterSeats();
-                    }
-                }
-            }
-            }
-            break;
-            case 27:
-            {
-                for(j=i;j<i+Seats_Needed&&j<25;j++)
-                {
-                    seat[j]->Select=false;
-                    seat[j]->Draw();
+			EnterSeats();
+		    }
 		}
-                seat[i]->Highlight();
-            }
-            break;
-            case 'x':
-            {
-                for(i =0;i<25;i++)
-                {
-                    delete seat[i];
-                }
-                exit(0);
-            }
-            break;
+	    }
+	    }
+	    break;
+	    case 27:
+	    {
+		for(j=i;j<i+Seats_Needed&&j<25;j++)
+		{
+		    seat[j]->Select=false;
+		    seat[j]->Draw();
+		}
+		seat[i]->Highlight();
+	    }
+	    break;
+	    case 'x':
+	    {
+		for(i =0;i<25;i++)
+		{
+		    delete seat[i];
+		}
+		exit(0);
+	    }
+	    break;
 	}
     }while(a!='x'&&l!=1);
     // for(j =0;j<25;j++)
@@ -1514,6 +1513,21 @@ void CustomerConfirm()
     mCustomerConfirm.AddItem(ccNext);
     mCustomerConfirm.AddItem(ccBack);
     mCustomerConfirm.Draw();
+    time_t t=time(NULL);
+    char *time=ctime(&t),temp[50],name[50];
+    strcpy(temp,time);
+    int j;
+    for(int i=0;i<strlen(temp);i++)
+    {
+	if((isalpha(temp[i])==0)&&(isspace(temp[i])==0)&&(ispunct(temp[i])==0))
+	{
+		name[j]=temp[i];
+		j++;
+	}
+    }
+    name[0]='M';
+    name[strlen(name)-1]='.';
+    strcat(name,"txt");
     textcolor(WHITE);
     float Subtotal = Choice.Seats*Choice.Price;
     gotoxy(15,7);
@@ -1544,16 +1558,44 @@ void CustomerConfirm()
     cout<<"___________________________________________";
     gotoxy(15,20);
     float FinalPrice=Subtotal*(1.21)+100;
-    cout<<"	     		   Total Price : "<<FinalPrice;
+    cout<<"	     		    Total Price : "<<FinalPrice;
     switch(Navigate(mCustomerConfirm))
     {
-	default:
+	case 2: fstream fil;
+	 fil.open(name,ios::out);
+	 fil<<"  	           Movie Time"<<endl;
+	 fil<<"               Customer Receipt"<<endl;
+	 fil<<"	   "<<time;
+	 fil<<"-------------------------------------------"<<endl;
+	 fil<<"Movie Selected  	: "<<Choice.Mn<<endl;
+	 fil<<"Time	       		: "<<Choice.Timing<<endl;
+	 fil<<"Price(Per Seat} 	: "<<Choice.Price<<endl;
+	 fil<<"No. Of Seats   		:  "<<Choice.Seats<<endl;
+	 fil<<"-------------------------------------------"<<endl;
+	 fil<<"   		       Subtotal : "<<Subtotal<<endl;
+	 fil<<"   		       	    GST : 18.5%"<<endl;
+	 fil<<"   	       Convinience Fees : 100"<<endl;
+	 fil<<"   	         Service Charge : 2.5%"<<endl;
+	 fil<<"___________________________________________"<<endl;
+	 fil<<"	     		 Total Price : "<<FinalPrice<<endl;
+	 fil.close();
+	 clrscr();
+	 gotoxy(12,30);
+	 cout<<"Thank you!!\nYour Receipt has been Saved to:"<<name;
+	 getch();
+	 exit(0);
+	 break;
+	 case 3:
+	 CustomerHome();
+	 break;
+/*	default:
 	{
 	    mCustomerConfirm.EnableClickHandler(currentitem);
 	}
-	break;
+	break;*/
     }
 }
+
 void main()
 {
      int p=0,q=0,r=0,i=1;
@@ -1561,11 +1603,11 @@ void main()
 
     while(p<25)
     {
-        for(q = 0;q<5;q++)
+	for(q = 0;q<5;q++)
             {
                 seat[p] = new Seat(20+(10*q),5+r,YELLOW,GREEN,p,a,i);
                 seat[p]->Occupied= false;
-                p++;
+		p++;
                 i++;
             }
         r+=4;
@@ -1584,6 +1626,6 @@ void main()
         delete seat[p];
     }
     clrscr();
-    cout<<"ended";
+    cout<<"Thank You!";
     getch();
 }
