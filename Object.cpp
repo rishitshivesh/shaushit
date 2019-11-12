@@ -40,6 +40,7 @@ void Database_Settings();
 void Movie_Settings();
 void about();
 void CancelTicket();
+void CheckBookingStatus();
 void Default(){return;}
 int Seats_Occupied();
 void EnterSeats();
@@ -862,6 +863,7 @@ void AdminLogin()
 	    mAdminLogin.EnableClickHandler(currentitem);
 	break;
     }
+
 }
 
 void AdminHome()
@@ -914,11 +916,14 @@ void CustomerIndex()
     clrscr();
     _setcursortype(_NOCURSOR);
     TextBox *NewT = new TextBox(25,6,30,1,"Book New Ticket",0,YELLOW,0,CustomerHome);
-    TextBox *CancelT = new TextBox(25,9,30,1,"Cancel Ticket",0,YELLOW,2,CancelTicket);
+    TextBox *CancelT = new TextBox(25,9,30,1,"Cancel Ticket",0,YELLOW,1,CancelTicket);
+    TextBox *CBStatus = new TextBox(25,12,30,1,"Check Status",0,YELLOW,2,CheckBookingStatus);
     TextBox *ciBack = new TextBox(1,23,20,1,"Sign Out",0,CYAN,4,Customerlogin);
+
     Menu mCustomerIndex(4,"Customer Home");
     mCustomerIndex.AddItem(NewT);
     mCustomerIndex.AddItem(CancelT);
+    mCustomerIndex.AddItem(CBStatus);
     mCustomerIndex.AddItem(ciBack);
     mCustomerIndex.Draw();
     switch(Navigate(mCustomerIndex))
@@ -1709,7 +1714,7 @@ void CancelTicket()
 		fil.open("Info.dat",ios::out|ios::in|ios::binary);
 		while((fil.read((char*)&Movie,sizeof(Movie)))&&!found)
 		{
-			if((strcmp(Movie.ID,cid->GetText())==0)&&(Movie.Status=true))
+			if((strcmp(Movie.ID,cid->GetText())==0)&&(Movie.Status==true))
 			{
 				Movie.Status=false;
 				fil.seekg(-1*sizeof(Movie),ios::cur);
@@ -1729,6 +1734,7 @@ void CancelTicket()
 			cout<<"Ticket Successfully Cancelled...";
 			getch();
 		}
+		fil.close();
 		CustomerIndex();
 		//mCancelTicket.EnableClickHandler(currentitem);
 	}
@@ -1737,6 +1743,68 @@ void CancelTicket()
 	{
 	    CustomerIndex();
 	    //mCancelTicket.EnableClickHandler(currentitem);
+	}
+	break;
+    }
+}
+void CheckBookingStatus()
+{
+    clrscr();
+    _setcursortype(_NOCURSOR);
+    gotoxy(5,11);
+    cout<<"ENTER YOUR BOOKING ID:";
+    TextBox *cbs = new TextBox(30,10,20,1,"",0,GREEN,0,CancelTicket);
+    TextBox *cbsNext = new TextBox(72,23,8,1,"NEXT",0,CYAN,2,CustomerHome);
+    TextBox *cbsBack = new TextBox(1,23,8,1,"BACK",0,CYAN,3,CustomerHome);
+    cbs->SetReadOnly(false);
+    Menu mBookingStatus(8,"Check Booking Status");
+    mBookingStatus.AddItem(cbs);
+    mBookingStatus.AddItem(cbsNext);
+    mBookingStatus.AddItem(cbsBack);
+    mBookingStatus.Draw();
+    int found=0;
+    MOVIE Movie;
+    switch(Navigate(mBookingStatus))
+    {
+	case 2:
+	{
+		fstream fil;
+		fil.open("Info.dat",ios::in|ios::binary);
+		while((fil.read((char*)&Movie,sizeof(Movie)))&&!found)
+		{
+			if((strcmp(Movie.ID,cbs->GetText())==0)&&(Movie.Status==true))
+			{
+				clrscr();
+				cout<<"Ticket Confirm!";
+				getch();
+				found++;
+			}
+			else if((strcmp(Movie.ID,cbs->GetText())==0)&&(Movie.Status==false))
+			{
+				clrscr();
+				cout<<"Your Ticket Has Been Cancelled...";
+				getch();
+				found++;
+			}
+		}
+		if(!found)
+		{
+			clrscr();
+			cout<<"Booking Not Found!";
+			getch();
+		}
+		else
+		{
+		}
+		fil.close();
+		CustomerIndex();
+		//mBookingStatus.EnableClickHandler(currentitem);
+	}
+	break;
+	default:
+	{
+	    CustomerIndex();
+	    //mBookingStatus.EnableClickHandler(currentitem);
 	}
 	break;
     }
