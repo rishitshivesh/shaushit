@@ -75,7 +75,7 @@ public:
 int CUSTOMER::CheckPassword(char *password)
 {
     if(strcmp(Password,password)==0)
-        return 1;
+	return 1;
     else{
         return 0;
     }
@@ -106,7 +106,7 @@ int ADMIN::CheckPassword(char *password)
     if(strcmp(Password,password)==0)
         return 1;
     else{
-        return 0;
+	return 0;
     }
 }
 void ADMIN::inputdata(char *name, char *username,char *password, char *email, char *phone)
@@ -127,7 +127,7 @@ int AdminCheckID(char *username,char *password=" ")
     while(fil.read((char *)&Admin,sizeof(Admin)))
     {
         if(strcmp(Admin.Username,username)==0&&Admin.CheckPassword(password))
-            exists=1;
+	    exists=1;
 
     }
     fil.close();
@@ -145,7 +145,7 @@ int CheckFile(char *username,char *password=" ")
         if(strcmp(Customer.Username,username)==0 && Customer.CheckPassword(password))
             exists=1;
         else if(strcmp(Customer.Username,username)==0)
-            exists=2;
+	    exists=2;
 
     }
 
@@ -166,7 +166,7 @@ class TextBox
     char Caption[100];
     bool Hide;
     char HiddenText[100];
-    
+
     public:
     
     int ID;
@@ -179,7 +179,7 @@ class TextBox
     void HideText(bool Hide);
     char *GetText();
     void Clear();
-};  
+};
 
 TextBox::TextBox(int x, int y, int width, int height, char caption[],int Align,int color, int Id,void (*callback)(void))
 {
@@ -197,7 +197,7 @@ TextBox::TextBox(int x, int y, int width, int height, char caption[],int Align,i
     int i;
         for(i=0;i<strlen(Caption);i++)
         HiddenText[i] = '*';
-        HiddenText[i]=0;       
+	HiddenText[i]=0;
 }               
 
 void TextBox::Draw()
@@ -244,12 +244,12 @@ void TextBox::Highlight(char a)
 	textcolor(RED);
         gotoxy(X,Y+Height+1);
         cprintf(w);
-        textcolor(WHITE);
+	textcolor(WHITE);
     }
     else{
         char w[70] = " ";
         for(int i = 0;i<Width;i++)
-            w[i] = a;
+	    w[i] = a;
         textcolor(RED);
         gotoxy(X,Y+Height+1);
 	cprintf(w);
@@ -257,12 +257,12 @@ void TextBox::Highlight(char a)
 
         int ch;
         int len=strlen(Caption),curpos,curx;
-        curpos=len;
+	curpos=len;
 
         // if(getch()==13){
         //     Clear();
         do{
-            curx=X+strlen(Caption)+2;
+	    curx=X+strlen(Caption)+2;
             gotoxy(curx,Y+(Height%2));
             _setcursortype(_NORMALCURSOR);
 	    ch=getch();
@@ -270,12 +270,12 @@ void TextBox::Highlight(char a)
 	    // { ch=getch();
             switch (ch)
             {
-                case 8: //backspace
+		case 8: //backspace
                     if(len>0)
                     {
                         Caption[curpos-1]=0;
                         HiddenText[curpos-1]=0;                     
-                        curpos--;
+			curpos--;
                         len--;
                     }
 		break;
@@ -283,12 +283,12 @@ void TextBox::Highlight(char a)
 	    //}//if(ch==0) ended
             if(isprint(ch))
             {
-                Caption[curpos]=ch;
+		Caption[curpos]=ch;
                 HiddenText[curpos]='*';
                 Caption[curpos+1]=0;
                 HiddenText[curpos+1]=0;
                 if(X+strlen(Caption)>X+Width)
-                {
+		{
                     Caption[curpos]=0;
                     HiddenText[curpos]=0;
 		    Draw();
@@ -296,12 +296,12 @@ void TextBox::Highlight(char a)
 		}
                 else
                 {
-                    curpos++;
+		    curpos++;
                     len++;
                 }
             }
 
-            Draw();
+	    Draw();
         }while(ch!=13 && ch!=27);
         //}//if enter not pressed
     }
@@ -439,12 +439,12 @@ public:
 	pageid = p;
 	itemnumber=-1;
 	currentitem=0;
-        TotalMenus++;
+	TotalMenus++;
         strcpy(Caption,a);
         menubar = NULL;
-        for(int i=0;i<25;i++)
+	for(int i=0;i<25;i++)
         {
-            textbox[i]= NULL;
+	    textbox[i]= NULL;
         }
     }
     void Drawbox(int l,int b,int x ,int y,char text[]);
@@ -456,8 +456,8 @@ public:
     void EnableClickHandler(int current_item);
     ~Menu(){
             delete menubar;
-            for(int i = 0;i<itemnumber;i++)
-                delete textbox[i];
+	    for(int i = 0;i<itemnumber;i++)
+		delete textbox[i];
             if(debug_mode)
             {
 		cout<<Caption<<"deleted";
@@ -530,12 +530,12 @@ void Menu::Scroll(int current_item,int dir)
 {
     textbox[current_item]->Draw();
     switch(dir)
-        {
+	{
         case DOWN:
         {
         if(current_item<itemnumber)
         {
-             currentitem++;
+	     currentitem++;
              textbox[(current_item+1)]->Highlight('*');
         }
 	else if(current_item ==itemnumber)
@@ -543,12 +543,12 @@ void Menu::Scroll(int current_item,int dir)
 	     currentitem = 0;
 	     textbox[currentitem]->Highlight('*');
 	}
-        }
+	}
           break;
           case UP:
            {
         if(current_item>0)
-        {
+	{
              currentitem--;
              textbox[currentitem]->Highlight('*');
 	}
@@ -556,7 +556,7 @@ void Menu::Scroll(int current_item,int dir)
 	{
 	     currentitem = itemnumber;
 	     textbox[currentitem]->Highlight('*');
-        }
+	}
            }
         break;
     }
@@ -574,7 +574,7 @@ int Navigate(Menu menu)
     {
         a=getch();
         switch(tolower(a))
-        {
+	{
             case 0:
             {
 	    b = getch();
@@ -582,12 +582,12 @@ int Navigate(Menu menu)
 	    {
 		case DOWN:
 		case LEFT://sahi hai mere bhai
-                {
+		{
                     menu.Scroll(currentitem,DOWN); 
                 
                 }
                 break;
-                case UP:
+		case UP:
                 case RIGHT:
                 {
 		    menu.Scroll(currentitem,UP);
@@ -595,12 +595,12 @@ int Navigate(Menu menu)
 		}
 		break;
 	    }// switch b ends
-            }// case :0 ends
+	    }// case :0 ends
             break;
             case 13:{
                 return menu.ReturnID(currentitem);
             }
-            break;
+	    break;
             case 'e':
             exit(0);
 	    break;
@@ -616,17 +616,17 @@ void welcome()
     _setcursortype(_NOCURSOR);
     //flushall();
     //currentmenu=0;
-    TextBox *pAdmin = new TextBox(30,5,20,1,"ADMIN",0,YELLOW,0,AdminLogin);
+    TextBox *pAdmin = new TextBox(30,5,20,1,"ADMIN",0,CYAN,0,AdminLogin);
     TextBox *pCustomer = new TextBox(30,8,20,1,"CUSTOMER",0,GREEN,1,Customerlogin);
     Menu mWelcome(0,"WELCOME");
     mWelcome.AddItem(pAdmin);
     mWelcome.AddItem(pCustomer);
-    mWelcome.Draw(); 
+    mWelcome.Draw();
     switch(Navigate(mWelcome))
     {
         case 0:
         {
-            if(Admin_LoggedIn)
+	    if(Admin_LoggedIn)
                 AdminHome();
                 
 	    else {AdminLogin();}
@@ -634,12 +634,12 @@ void welcome()
 	break;
 	case 1:
 	{
-            if(Customer_LoggedIn)
+	    if(Customer_LoggedIn)
                 CustomerHome();
                 
             else {Customerlogin();}
         }
-        break;
+	break;
     }
 }
 
@@ -708,7 +708,7 @@ void CustomerSignUp()
     mCustomerSignUp.AddItem(pemail);
     mCustomerSignUp.AddItem(pNext);
     mCustomerSignUp.AddItem(pBack);
-    mCustomerSignUp.Draw(); 
+    mCustomerSignUp.Draw();
     pPassword->HideText(true);
 
     switch(Navigate(mCustomerSignUp))
@@ -717,11 +717,11 @@ void CustomerSignUp()
             mCustomerSignUp.EnableClickHandler(currentitem);
         break;
         case 5:
-        {
+	{
             CUSTOMER Customer;
 
 	    Customer.inputdata(pName->GetText(),pUsername->GetText(),pPassword->GetText(),pemail->GetText(),pPhone->GetText());
-            if(CheckFile(pUsername->GetText())==2)
+	    if(CheckFile(pUsername->GetText())==2)
 	    {
 		gotoxy(15,20);
 		cprintf("User Exists. Press Enter to go to LoginPage!");
@@ -730,11 +730,11 @@ void CustomerSignUp()
             }
             else
             {
-                fstream fil;
+		fstream fil;
                 fil.open("customertext.dat",ios::binary|ios::app);
                 fil.write((char *)&Customer,sizeof(Customer));
 		fil.close();
-                Customerlogin();
+		Customerlogin();
 	    }
 	}
 	break;
@@ -769,11 +769,11 @@ void Customerlogin()
             mCustomerlogin.EnableClickHandler(currentitem);
         break;
         case 2:
-        {
+	{
             if(CheckFile(pUsername->GetText(),pPassword->GetText())==1)
             {
 		Customer_LoggedIn =true;
-                CustomerHome();
+		CustomerHome();
 
 	    }
 	    else{
@@ -782,11 +782,11 @@ void Customerlogin()
                 if(getch()==13)
                     Customerlogin();
             }
-        }
+	}
         break;
         default:
 	    mCustomerlogin.EnableClickHandler(currentitem);
-        break;
+	break;
     }
 }
 void AdminLogin()
@@ -812,7 +812,7 @@ void AdminLogin()
         case 3:
             mAdminLogin.EnableClickHandler(currentitem);
 	break;
-        case 2:
+	case 2:
 	{
 	    if(AdminCheckID(pUsername->GetText(),pPassword->GetText())==1)
 	    {
@@ -821,11 +821,11 @@ void AdminLogin()
             }
             else{
                 gotoxy(20,11);
-                cprintf("Incorrect Password,Press Enter to Retry");
+		cprintf("Incorrect Password,Press Enter to Retry");
                 if(getch()==13)
                     AdminLogin();
 	    }
-        }
+	}
 	break;
 	default:
 	    mAdminLogin.EnableClickHandler(currentitem);
@@ -851,7 +851,7 @@ void AdminHome()
     mAdminHome.Draw();
     switch(Navigate(mAdminHome))
     {
-        case 4:
+	case 4:
 
 	    window(20,24,50,25);
 	    clrscr();
@@ -860,21 +860,21 @@ void AdminHome()
                 if(tolower(getch())=='y')
                 {
                     window(20,24,50,25);
-                    clrscr();
+		    clrscr();
                     window(1,1,80,25);
                     Admin_LoggedIn=false;
 		    mAdminHome.EnableClickHandler(currentitem);
-                    break;
+		    break;
 		}
 		else{
 		    window(1,1,80,25);
                     AdminHome();
                 } 
-        
-        break;
-        default:
-            mAdminHome.EnableClickHandler(currentitem);
-        break;
+
+	break;
+	default:
+	    mAdminHome.EnableClickHandler(currentitem);
+	break;
     }
 }
 void CustomerHome()
@@ -883,28 +883,42 @@ void CustomerHome()
     window(1,1,80,25);
     //clrscr();
     _setcursortype(_NOCURSOR);
-    MOVIE Movie;
-    TextBox *m1 = new TextBox(10,10,10,5,"Movie 1",0,YELLOW,0,EnterSeats);
-    TextBox *m2 = new TextBox(45,10,10,5,"Movie 2",0,GREEN,1,EnterSeats);
+    MOVIE temp,Movie;
+    char n1[80],n2[80];
+    fstream fil1,fil2;
+    fil1.open("movie1.dat",ios::binary|ios::in);
+    fil1.read((char *)&temp,sizeof(temp));
+    strcpy(n1,temp.Mn);
+//    m1->Clear();
+//    m1->SetText(temp.Mn);
+    fil1.close();
+    fil2.open("movie2.dat",ios::binary|ios::in);
+    fil2.read((char *)&temp,sizeof(temp));
+    strcpy(n2,temp.Mn);
+//    m2->Clear();
+//    m2->SetText(temp.Mn);
+    fil2.close();
+    TextBox *m1 = new TextBox(15,10,20,1,n1,4,5,0,EnterSeats);
+    TextBox *m2 = new TextBox(40,10,20,1,n2,4,5,1,EnterSeats);
     TextBox *pBack = new TextBox(1,23,8,1,"BACK",0,CYAN,4,Customerlogin);
     Menu mCustomerHome(3,"Now Playing");
     mCustomerHome.AddItem(m1);
     mCustomerHome.AddItem(m2);
     mCustomerHome.AddItem(pBack);
     mCustomerHome.Draw();
-    fstream fil1,fil2;
+    fstream fil3,fil4;
     switch(Navigate(mCustomerHome))
     {
-	case 0: fil1.open("movie1.dat",ios::in|ios::binary);
-		while(fil1.read((char*)&Movie,sizeof(Movie)))
+	case 0: fil3.open("movie1.dat",ios::in|ios::binary);
+		while(fil3.read((char*)&Movie,sizeof(Movie)))
 		Choice=Movie;
-		fil1.close();
+		fil3.close();
 		mCustomerHome.EnableClickHandler(currentitem);
 		break;
-	case 1: fil2.open("movie2.dat",ios::in|ios::binary);
-		while(fil2.read((char*)&Movie,sizeof(Movie)))
+	case 1: fil4.open("movie2.dat",ios::in|ios::binary);
+		while(fil4.read((char*)&Movie,sizeof(Movie)))
 		Choice=Movie;
-		fil1.close();
+		fil4.close();
 		mCustomerHome.EnableClickHandler(currentitem);
 		break;
 	case 4:
@@ -986,18 +1000,14 @@ void Movie_Settings()
     int found1=0,found2=0;
     fstream fild,fil1,fil2;
     fil1.open("movie1.dat",ios::binary|ios::in);
-    while(fil1.read((char *)&temp,sizeof(temp)))
-    {
+    fil1.read((char *)&temp,sizeof(temp));
 	pName1->Clear();
 	pName1->SetText(temp.Mn);
-    }
     fil1.close();
     fil2.open("movie2.dat",ios::binary|ios::in);
-    while(fil2.read((char *)&temp,sizeof(temp)))
-    {
+    fil2.read((char *)&temp,sizeof(temp));
 	pName2->Clear();
 	pName2->SetText(temp.Mn);
-    }
     fil2.close();
 
     mMovie_Settings.Draw();
@@ -1487,9 +1497,9 @@ void seats(int Seats_Needed)
     // }
     switch(Navigate(mseats))
     {
-        default: 
-            mseats.EnableClickHandler(currentitem);
-        break;
+	default:
+	    mseats.EnableClickHandler(currentitem);
+	break;
     }
 }
 void CustomerConfirm()
@@ -1505,16 +1515,38 @@ void CustomerConfirm()
     mCustomerConfirm.AddItem(ccBack);
     mCustomerConfirm.Draw();
     textcolor(WHITE);
+    float Subtotal = Choice.Seats*Choice.Price;
+    gotoxy(15,7);
+    cout<<"  	        Movie Time";
+    gotoxy(15,8);
+    cout<<"               Customer Receipt";
+    gotoxy(15,9);
+    cout<<"-------------------------------------------";
     gotoxy(15,10);
-    cout<<"Movie Selected : "<<Choice.Mn;
+    cout<<"Movie Selected  	: "<<Choice.Mn;
     gotoxy(15,11);
-    cout<<"No. Of Seats   :  "<<Choice.Seats;
+    cout<<"Time	        : "<<Choice.Timing;
+    gotoxy(15,12);
+    cout<<"Price(Per Seat} 	: "<<Choice.Price;
+    gotoxy(15,13);
+    cout<<"No. Of Seats   	:  "<<Choice.Seats;
+    gotoxy(15,14);
+    cout<<"-------------------------------------------";
+    gotoxy(15,15);
+    cout<<"   		       Subtotal : "<<Subtotal;
+    gotoxy(15,16);
+    cout<<"   		       	    GST : 18.5%";
+    gotoxy(15,17);
+    cout<<"   	       Convinience Fees : 100";
+    gotoxy(15,18);
+    cout<<"   	         Service Charge : 2.5%";
+    gotoxy(15,19);
+    cout<<"___________________________________________";
+    gotoxy(15,20);
+    float FinalPrice=Subtotal*(1.21)+100;
+    cout<<"	     		   Total Price : "<<FinalPrice;
     switch(Navigate(mCustomerConfirm))
     {
-	case 2: welcome();
-		break;
-	case 3: EnterSeats();
-		break;
 	default:
 	{
 	    mCustomerConfirm.EnableClickHandler(currentitem);
