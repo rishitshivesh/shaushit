@@ -29,6 +29,7 @@ void welcome();
 void Customerlogin();
 void CustomerSignUp();
 void CustomerTime();
+void CustomerIndex();
 void CustomerHome();
 void CustomerConfirm();
 void AdminLogin();
@@ -38,6 +39,7 @@ void Theatre_Settings();
 void Database_Settings();
 void Movie_Settings();
 void about();
+void CancelTicket();
 void Default(){return;}
 int Seats_Occupied();
 void EnterSeats();
@@ -52,6 +54,8 @@ class MOVIE
     float Price;
     char* MovieName();
     int Seats;
+    char ID[15];
+    bool Status;
 
 }Choice;
 char *MOVIE::MovieName()
@@ -236,73 +240,73 @@ void TextBox::Highlight(char a)
 {
     if(bReadOnly)
     {
-        _setcursortype(_NOCURSOR);
-        char w[70] = " ";
+	_setcursortype(_NOCURSOR);
+	char w[70] = " ";
 	for(int i = 0;i<Width;i++)
-            w[i] = a;
+	    w[i] = a;
 	textcolor(RED);
 	gotoxy(X,Y+Height+1);
-        cprintf(w);
+	cprintf(w);
 	textcolor(WHITE);
     }
     else{
-        char w[70] = " ";
-        for(int i = 0;i<Width;i++)
+	char w[70] = " ";
+	for(int i = 0;i<Width;i++)
 	    w[i] = a;
-        textcolor(RED);
-        gotoxy(X,Y+Height+1);
+	textcolor(RED);
+	gotoxy(X,Y+Height+1);
 	cprintf(w);
-        textcolor(WHITE);
+	textcolor(WHITE);
 
 	int ch;
-        int len=strlen(Caption),curpos,curx;
+	int len=strlen(Caption),curpos,curx;
 	curpos=len;
 
-        // if(getch()==13){
-        //     Clear();
-        do{
+	// if(getch()==13){
+	//     Clear();
+	do{
 	    curx=X+strlen(Caption)+2;
-            gotoxy(curx,Y+(Height%2));
-            _setcursortype(_NORMALCURSOR);
+	    gotoxy(curx,Y+(Height%2));
+	    _setcursortype(_NORMALCURSOR);
 	    ch=getch();
-            // if(ch==0)
+	    // if(ch==0)
 	    // { ch=getch();
 	    switch (ch)
-            {
+	    {
 		case 8: //backspace
-                    if(len>0)
-                    {
-                        Caption[curpos-1]=0;
-                        HiddenText[curpos-1]=0;                     
+		    if(len>0)
+		    {
+			Caption[curpos-1]=0;
+			HiddenText[curpos-1]=0;
 			curpos--;
-                        len--;
-                    }
+			len--;
+		    }
 		break;
-            }
+	    }
 	    //}//if(ch==0) ended
 	    if(isprint(ch))
-            {
+	    {
 		Caption[curpos]=ch;
-                HiddenText[curpos]='*';
-                Caption[curpos+1]=0;
-                HiddenText[curpos+1]=0;
-                if(X+strlen(Caption)>X+Width)
+		HiddenText[curpos]='*';
+		Caption[curpos+1]=0;
+		HiddenText[curpos+1]=0;
+		if(X+strlen(Caption)>X+Width)
 		{
-                    Caption[curpos]=0;
-                    HiddenText[curpos]=0;
+		    Caption[curpos]=0;
+		    HiddenText[curpos]=0;
 		    Draw();
-                    break;
+		    break;
 		}
 		else
-                {
+		{
 		    curpos++;
-                    len++;
-                }
-            }
+		    len++;
+		}
+	    }
 
 	    Draw();
-        }while(ch!=13 && ch!=27);
-        //}//if enter not pressed
+	}while(ch!=13 && ch!=27);
+	//}//if enter not pressed
     }
     _setcursortype(_NOCURSOR);
     char w[70] = " ";
@@ -401,7 +405,7 @@ void Seat::Draw(int color)
 	cprintf("%c",178);
     }
     else if(Occupied){
-        textcolor(DARKGRAY);
+	textcolor(DARKGRAY);
         cprintf("%c",177);
     }
     else{
@@ -440,7 +444,7 @@ public:
 	currentitem=0;
 	TotalMenus++;
         strcpy(Caption,a);
-        menubar = NULL;
+	menubar = NULL;
 	for(int i=0;i<25;i++)
         {
 	    textbox[i]= NULL;
@@ -492,7 +496,7 @@ void Menu::Drawbox(int l,int b,int x ,int y,char text[])
     gotoxy(x+2,y+(b%2));
     textcolor(WHITE);
     cprintf(text);
-    
+
 }
 void Menu::AddItem(TextBox *tb)
 {
@@ -531,7 +535,7 @@ void Menu::Scroll(int current_item,int dir)
     switch(dir)
 	{
         case DOWN:
-        {
+	{
         if(current_item<itemnumber)
         {
 	     currentitem++;
@@ -544,7 +548,7 @@ void Menu::Scroll(int current_item,int dir)
 	}
 	}
           break;
-          case UP:
+	  case UP:
            {
         if(current_item>0)
 	{
@@ -557,7 +561,7 @@ void Menu::Scroll(int current_item,int dir)
 	     textbox[currentitem]->Highlight('*');
 	}
            }
-        break;
+	break;
     }
 }
 void Menu::EnableClickHandler(int current_item)
@@ -583,7 +587,7 @@ int Navigate(Menu menu)
 		case LEFT://sahi hai mere bhai
 		{
                     menu.Scroll(currentitem,DOWN); 
-                
+
                 }
                 break;
 		case UP:
@@ -596,7 +600,7 @@ int Navigate(Menu menu)
 	    }// switch b ends
 	    }// case :0 ends
             break;
-            case 13:{
+	    case 13:{
                 return menu.ReturnID(currentitem);
             }
 	    break;
@@ -634,8 +638,8 @@ void welcome()
 	case 1:
 	{
 	    if(Customer_LoggedIn)
-                CustomerHome();
-                
+                CustomerIndex();
+
             else {Customerlogin();}
         }
 	break;
@@ -648,11 +652,21 @@ void AdminSignUp()
     _setcursortype(_NOCURSOR);
     //flushall();
     currentmenu = 1;
-    TextBox *pName = new TextBox(30,5,20,1,"NAME",0,YELLOW,0,AdminSignUp);
-    TextBox *pUsername = new TextBox(30,8,20,1,"Username",0,GREEN,1,AdminSignUp);
-    TextBox *pPassword = new TextBox(30,11,20,1,"Password",0,YELLOW,2,AdminSignUp);
-    TextBox *pPhone = new TextBox(30,14,20,1,"PHONE NUMBER",0,GREEN,3,AdminSignUp);
-    TextBox *pemail = new TextBox(10,17,65,1,"EMAIL ID",0,YELLOW,4,AdminSignUp);
+    gotoxy(6,6);
+    cout<<"Name: ";
+    gotoxy(6,9);
+    cout<<"Username: ";
+    gotoxy(6,12);
+    cout<<"Password: ";
+    gotoxy(6,15);
+    cout<<"Phone Number: ";
+    gotoxy(6,18);
+    cout<<"Email Id: ";
+    TextBox *pName = new TextBox(20,5,50,1,"NAME",0,YELLOW,0,AdminSignUp);
+    TextBox *pUsername = new TextBox(20,8,50,1,"Username",0,GREEN,1,AdminSignUp);
+    TextBox *pPassword = new TextBox(20,11,50,1,"Password",0,YELLOW,2,AdminSignUp);
+    TextBox *pPhone = new TextBox(20,14,50,1,"PHONE NUMBER",0,GREEN,3,AdminSignUp);
+    TextBox *pemail = new TextBox(20,18,50,1,"EMAIL ID",0,YELLOW,4,AdminSignUp);
     TextBox *pNext = new TextBox(30,21,20,1,"NEXT",0,CYAN,5,welcome);
     pName->SetReadOnly(false);
     pUsername->SetReadOnly(false);
@@ -686,13 +700,23 @@ void CustomerSignUp()
     _setcursortype(_NOCURSOR);
     //flushall();
     //currentmenu = 1;
-    TextBox *pName = new TextBox(30,5,20,1,"NAME",0,YELLOW,0,CustomerSignUp);
-    TextBox *pUsername = new TextBox(30,8,20,1,"Username",0,GREEN,1,CustomerSignUp);
-    TextBox *pPassword = new TextBox(30,11,20,1,"Password",0,YELLOW,2,CustomerSignUp);
-    TextBox *pPhone = new TextBox(30,14,20,1,"PHONE NUMBER",0,GREEN,3,CustomerSignUp);
-    TextBox *pemail = new TextBox(10,17,65,1,"EMAIL ID",0,YELLOW,4,CustomerSignUp);
-    TextBox *pNext = new TextBox(30,21,20,1,"NEXT",0,CYAN,5,Customerlogin);
-    TextBox *pBack = new TextBox(10,21,20,1,"BACK",0,CYAN,6,Customerlogin);
+    gotoxy(6,6);
+    cout<<"Name: ";
+    gotoxy(6,9);
+    cout<<"Username: ";
+    gotoxy(6,12);
+    cout<<"Password: ";
+    gotoxy(6,15);
+    cout<<"Phone Number: ";
+    gotoxy(6,18);
+    cout<<"Email Id: ";
+    TextBox *pName = new TextBox(20,5,50,1,"",0,YELLOW,0,CustomerSignUp);
+    TextBox *pUsername = new TextBox(20,8,50,1,"",0,GREEN,1,CustomerSignUp);
+    TextBox *pPassword = new TextBox(20,11,50,1,"",0,YELLOW,2,CustomerSignUp);
+    TextBox *pPhone = new TextBox(20,14,50,1,"",0,GREEN,3,CustomerSignUp);
+    TextBox *pemail = new TextBox(20,17,50,1,"",0,YELLOW,4,CustomerSignUp);
+    TextBox *pNext = new TextBox(30,22,20,1,"NEXT",0,CYAN,5,Customerlogin);
+    TextBox *pBack = new TextBox(10,22,20,1,"BACK",0,CYAN,6,Customerlogin);
     pName->SetReadOnly(false);
     pUsername->SetReadOnly(false);
     pPhone->SetReadOnly(false);
@@ -712,12 +736,12 @@ void CustomerSignUp()
 
     switch(Navigate(mCustomerSignUp))
     {
-        case 6:
-            mCustomerSignUp.EnableClickHandler(currentitem);
-        break;
-        case 5:
+	case 6:
+	    mCustomerSignUp.EnableClickHandler(currentitem);
+	break;
+	case 5:
 	{
-            CUSTOMER Customer;
+	    CUSTOMER Customer;
 
 	    Customer.inputdata(pName->GetText(),pUsername->GetText(),pPassword->GetText(),pemail->GetText(),pPhone->GetText());
 	    if(CheckFile(pUsername->GetText())==2)
@@ -725,30 +749,34 @@ void CustomerSignUp()
 		gotoxy(15,20);
 		cprintf("User Exists. Press Enter to go to LoginPage!");
 		if(getch()==13)
-                    Customerlogin();
-            }
-            else
-            {
+		    Customerlogin();
+	    }
+	    else
+	    {
 		fstream fil;
-                fil.open("customertext.dat",ios::binary|ios::app);
-                fil.write((char *)&Customer,sizeof(Customer));
+		fil.open("customertext.dat",ios::binary|ios::app);
+		fil.write((char *)&Customer,sizeof(Customer));
 		fil.close();
 		Customerlogin();
 	    }
 	}
 	break;
 	default:
-            mCustomerSignUp.EnableClickHandler(currentitem);
-        break;
+	    mCustomerSignUp.EnableClickHandler(currentitem);
+	break;
     }
-    
+
 }
 void Customerlogin()
 {
     clrscr();
     _setcursortype(_NOCURSOR);
-    TextBox *pUsername = new TextBox(30,5,20,1,"Username",0,YELLOW,0,Customerlogin);
-    TextBox *pPassword = new TextBox(30,8,20,1,"Password",0,GREEN,1,Customerlogin);
+    gotoxy(18,6);
+    cout<<"Username: ";
+    gotoxy(18,9);
+    cout<<"Password: ";
+    TextBox *pUsername = new TextBox(30,5,20,1,"",0,YELLOW,0,Customerlogin);
+    TextBox *pPassword = new TextBox(30,8,20,1,"",0,GREEN,1,Customerlogin);
     TextBox *pCustomerSignUp = new TextBox(30,11,20,1,"New Here, SIGN UP",4,LIGHTGREEN,1,CustomerSignUp);
     TextBox *pNext = new TextBox(50,15,20,1,"NEXT",0,CYAN,2,welcome);
     TextBox *pBack = new TextBox(10,15,20,1,"BACK",0,CYAN,3,welcome);
@@ -764,26 +792,26 @@ void Customerlogin()
     pPassword->HideText(true);
     switch(Navigate(mCustomerlogin))
     {
-        case 3:
-            mCustomerlogin.EnableClickHandler(currentitem);
-        break;
-        case 2:
+	case 3:
+	    mCustomerlogin.EnableClickHandler(currentitem);
+	break;
+	case 2:
 	{
-            if(CheckFile(pUsername->GetText(),pPassword->GetText())==1)
-            {
+	    if(CheckFile(pUsername->GetText(),pPassword->GetText())==1)
+	    {
 		Customer_LoggedIn =true;
-		CustomerHome();
+		CustomerIndex();
 
 	    }
 	    else{
 		gotoxy(20,14);
-                cprintf("Incorrect Password or Username,Press Enter to Retry");
-                if(getch()==13)
-                    Customerlogin();
-            }
+		cprintf("Incorrect Password or Username,Press Enter to Retry");
+		if(getch()==13)
+		    Customerlogin();
+	    }
 	}
-        break;
-        default:
+	break;
+	default:
 	    mCustomerlogin.EnableClickHandler(currentitem);
 	break;
     }
@@ -792,8 +820,12 @@ void AdminLogin()
 {
     clrscr();
     _setcursortype(_NOCURSOR);
-    TextBox *pUsername = new TextBox(30,5,20,1,"Username",0,YELLOW,0,AdminLogin);
-    TextBox *pPassword = new TextBox(30,8,20,1,"Password",0,GREEN,1,AdminLogin);
+    gotoxy(18,6);
+    cout<<"Username: ";
+    gotoxy(18,9);
+    cout<<"Password: ";
+    TextBox *pUsername = new TextBox(30,5,20,1,"",0,YELLOW,0,AdminLogin);
+    TextBox *pPassword = new TextBox(30,8,20,1,"",0,GREEN,1,AdminLogin);
     TextBox *pNext = new TextBox(50,12,20,1,"NEXT",0,CYAN,2,AdminHome);
     TextBox *pBack = new TextBox(10,12,20,1,"BACK",0,CYAN,3,welcome);
     pUsername->SetReadOnly(false);
@@ -803,32 +835,32 @@ void AdminLogin()
     mAdminLogin.AddItem(pPassword);
     mAdminLogin.AddItem(pNext);
     mAdminLogin.AddItem(pBack);
-    mAdminLogin.Draw(); 
+    mAdminLogin.Draw();
     pPassword->HideText(true);
 
     switch(Navigate(mAdminLogin))
     {
-        case 3:
-            mAdminLogin.EnableClickHandler(currentitem);
+	case 3:
+	    mAdminLogin.EnableClickHandler(currentitem);
 	break;
 	case 2:
 	{
 	    if(AdminCheckID(pUsername->GetText(),pPassword->GetText())==1)
 	    {
-                Admin_LoggedIn=true;
-                AdminHome();
-            }
-            else{
-                gotoxy(20,11);
+		Admin_LoggedIn=true;
+		AdminHome();
+	    }
+	    else{
+		gotoxy(20,11);
 		cprintf("Incorrect Password,Press Enter to Retry");
-                if(getch()==13)
-                    AdminLogin();
+		if(getch()==13)
+		    AdminLogin();
 	    }
 	}
 	break;
 	default:
 	    mAdminLogin.EnableClickHandler(currentitem);
-        break;
+	break;
     }
 }
 
@@ -852,27 +884,68 @@ void AdminHome()
     {
 	case 4:
 
-	    window(20,24,50,25);
+	    window(24,24,50,25);
 	    clrscr();
-            gotoxy(1,1);
-            cprintf("Do you want to LOG OUT(y/n)");
-                if(tolower(getch())=='y')
-                {
-                    window(20,24,50,25);
+	    gotoxy(1,1);
+	    cprintf("Do you want to LOG OUT(y/n)");
+		if(tolower(getch())=='y')
+		{
+		    window(20,24,50,25);
 		    clrscr();
-                    window(1,1,80,25);
-                    Admin_LoggedIn=false;
+		    window(1,1,80,25);
+		    Admin_LoggedIn=false;
 		    mAdminHome.EnableClickHandler(currentitem);
 		    break;
 		}
 		else{
 		    window(1,1,80,25);
-                    AdminHome();
-                } 
+		    AdminHome();
+		}
 
 	break;
 	default:
 	    mAdminHome.EnableClickHandler(currentitem);
+	break;
+    }
+}
+
+void CustomerIndex()
+{
+    clrscr();
+    _setcursortype(_NOCURSOR);
+    TextBox *NewT = new TextBox(25,6,30,1,"Book New Ticket",0,YELLOW,0,CustomerHome);
+    TextBox *CancelT = new TextBox(25,9,30,1,"Cancel Ticket",0,YELLOW,2,CancelTicket);
+    TextBox *ciBack = new TextBox(1,23,20,1,"Sign Out",0,CYAN,4,Customerlogin);
+    Menu mCustomerIndex(4,"Customer Home");
+    mCustomerIndex.AddItem(NewT);
+    mCustomerIndex.AddItem(CancelT);
+    mCustomerIndex.AddItem(ciBack);
+    mCustomerIndex.Draw();
+    switch(Navigate(mCustomerIndex))
+    {
+	case 4:
+
+	    window(24,24,50,25);
+	    clrscr();
+	    gotoxy(1,1);
+	    cprintf("Do you want to LOG OUT(y/n)");
+		if(tolower(getch())=='y')
+		{
+		    window(20,24,50,25);
+		    clrscr();
+		    window(1,1,80,25);
+		    Customer_LoggedIn=false;
+		    mCustomerIndex.EnableClickHandler(currentitem);
+		    break;
+		}
+		else{
+		    window(1,1,80,25);
+		    CustomerIndex();
+		}
+
+	break;
+	default:
+	    mCustomerIndex.EnableClickHandler(currentitem);
 	break;
     }
 }
@@ -882,42 +955,45 @@ void CustomerHome()
     window(1,1,80,25);
     //clrscr();
     _setcursortype(_NOCURSOR);
-    MOVIE temp,Movie;
+    MOVIE temp1,temp2;
     char n1[80],n2[80];
     fstream fil1,fil2;
     fil1.open("movie1.dat",ios::binary|ios::in);
-    fil1.read((char *)&temp,sizeof(temp));
-    strcpy(n1,temp.Mn);
+    fil1.read((char *)&temp1,sizeof(temp1));
+    strcpy(n1,temp1.Mn);
 //    m1->Clear();
 //    m1->SetText(temp.Mn);
-    fil1.close();
+    //fil1.close();
     fil2.open("movie2.dat",ios::binary|ios::in);
-    fil2.read((char *)&temp,sizeof(temp));
-    strcpy(n2,temp.Mn);
+    fil2.read((char *)&temp2,sizeof(temp2));
+    strcpy(n2,temp2.Mn);
 //    m2->Clear();
 //    m2->SetText(temp.Mn);
     fil2.close();
-    TextBox *m1 = new TextBox(15,10,20,1,n1,4,5,0,EnterSeats);
-    TextBox *m2 = new TextBox(40,10,20,1,n2,4,5,1,EnterSeats);
-    TextBox *pBack = new TextBox(1,23,8,1,"BACK",0,CYAN,4,Customerlogin);
-    Menu mCustomerHome(3,"Now Playing");
+    TextBox *m1 = new TextBox(15,10,20,1,n1,0,5,0,EnterSeats);
+    TextBox *m2 = new TextBox(40,10,20,1,n2,0,5,1,EnterSeats);
+    TextBox *pBack = new TextBox(1,23,8,1,"BACK",0,CYAN,4,CustomerIndex);
+    Menu mCustomerHome(4,"Now Playing");
     mCustomerHome.AddItem(m1);
     mCustomerHome.AddItem(m2);
     mCustomerHome.AddItem(pBack);
     mCustomerHome.Draw();
-    fstream fil3,fil4;
     switch(Navigate(mCustomerHome))
     {
-	case 0: fil3.open("movie1.dat",ios::in|ios::binary);
-		while(fil3.read((char*)&Movie,sizeof(Movie)))
-		Choice=Movie;
-		fil3.close();
+	case 0: //fstream fil3;
+		//fil3.open("movie1.dat",ios::in|ios::binary);
+		//while(fil1.read((char*)&Movie,sizeof(Movie)))
+		Choice=temp1;
+		fil1.close();
+		fil2.close();
 		mCustomerHome.EnableClickHandler(currentitem);
 		break;
-	case 1: fil4.open("movie2.dat",ios::in|ios::binary);
-		while(fil4.read((char*)&Movie,sizeof(Movie)))
-		Choice=Movie;
-		fil4.close();
+	case 1: //fstream fil4;
+		//fil4.open("movie2.dat",ios::in|ios::binary);
+		//while(fil4.read((char*)&Movie,sizeof(Movie)))
+		Choice=temp2;
+		fil1.close();
+		fil2.close();
 		mCustomerHome.EnableClickHandler(currentitem);
 		break;
 	case 4:
@@ -948,6 +1024,7 @@ void CustomerHome()
     //getch();
 
 }
+
 void Movie_Settings()
 {
     clrscr();
@@ -1152,13 +1229,13 @@ void Database_Settings()
 	    fil.close();
 	    AdminHome();
 	    //menu[currentmenu].EnableClickHandler(currentitem);
-        break;
-        case 7:
-            
-            AdminHome();
-        break;
-        default:
-            mDatabase_Settings.EnableClickHandler(currentitem);
+	break;
+	case 7:
+
+	    AdminHome();
+	break;
+	default:
+	    mDatabase_Settings.EnableClickHandler(currentitem);
 	break;
     }
 
@@ -1199,11 +1276,11 @@ void EnterSeats()
     clrscr();
     _setcursortype(_NOCURSOR);
     int Seats_Needed=1;
-    TextBox *nos = new TextBox(30,10,20,1,"Enter Seats",0,GREEN,0,EnterSeats);
+    TextBox *nos = new TextBox(30,10,20,1,"",0,GREEN,0,EnterSeats);
     TextBox *pNext = new TextBox(72,23,8,1,"NEXT",0,CYAN,2,welcome);
     TextBox *pBack = new TextBox(1,23,8,1,"BACK",0,CYAN,3,CustomerHome);
     nos->SetReadOnly(false);
-    Menu mEnterSeats(4,"Enter number of Seats");
+    Menu mEnterSeats(5,"Enter number of Seats");
     mEnterSeats.AddItem(nos);
     mEnterSeats.AddItem(pNext);
     mEnterSeats.AddItem(pBack);
@@ -1244,7 +1321,7 @@ void seats(int Seats_Needed)
     cout<<"Do you want to select seats manually?(y/n)";
     if(tolower(getch())=='y')
     {
-        manualmode = true;
+	manualmode = true;
     }
     clrscr();
     TextBox *pNext = new TextBox(72,23,8,1,"NEXT",0,CYAN,2,CustomerConfirm);
@@ -1253,7 +1330,7 @@ void seats(int Seats_Needed)
     Menu mseats(5,"Seats");
     mseats.AddItem(pNext);
     mseats.AddItem(pBack);
-    mseats.Draw(); 
+    mseats.Draw();
     int i=0,j=0,k=0,a,l=0,seats_selected=0;
     
     // for(j=0;j<25;j++)
@@ -1272,183 +1349,183 @@ void seats(int Seats_Needed)
     // }
     for(i=0;i<Max_Seats;i++)
     {
-        seat[i]->Draw();
+	seat[i]->Draw();
     }
-    
+
     i = 0;
     seat[0]->Highlight();
     if(manualmode)
 	seat[i]->Draw(LIGHTGREEN);
     else{
 	for(j=i;j<i+Seats_Needed&&j<25;j++)
-        {
-            seat[j]->Draw(LIGHTGREEN);    
-        }
-        seat[i]->Highlight();
+	{
+	    seat[j]->Draw(LIGHTGREEN);
+	}
+	seat[i]->Highlight();
     }
 
     do{
-        int a = getch();
-        
-        switch(a)
+	int a = getch();
+
+	switch(a)
 	{
-            case 0:
+	    case 0:
 	    {
-                a=getch();
-                switch(a)
-                {
-                    case RIGHT:
-                    {
-                        if(i<24){
-                            for(j=0;j<25;j++)
-                            {
-                                //seat[j]->Select=false;
-                                seat[j]->Draw();
-			    }
-                            seat[++i]->Highlight();
-			    seat[i]->Draw(LIGHTGREEN);
-                            if(!manualmode){
-                                for(j=i;j<i+Seats_Needed&&j<25;j++)
-                                {
-                                    seat[j]->Draw(LIGHTGREEN);
-                                }
-                            }
-                            seat[i]->Highlight();
-                        }
-                    }
-                    break;
-		    case LEFT:
-                    {
-			if(i>0){
-                            for(j=0;j<25;j++)
-                            {
-                                //seat[j]->Select=false;
-                                seat[j]->Draw();
-                            }
-                            seat[--i]->Highlight();
-                            seat[i]->Draw(LIGHTGREEN);
-                            if(!manualmode){
-                                for(j=i;j<i+Seats_Needed&&j<25;j++)
-                                {
-				    seat[j]->Draw(LIGHTGREEN);
-                                }
-			    }
-                            seat[i]->Highlight();
-                        }
-                    }
-                    break;
-                    case UP:
-                    {
-                        if(i>4&&i<25)
-                        {
-                            for(j=0;j<25;j++)
-                            {
+		a=getch();
+		switch(a)
+		{
+		    case RIGHT:
+		    {
+			if(i<24){
+			    for(j=0;j<25;j++)
+			    {
 				//seat[j]->Select=false;
-                                seat[j]->Draw();
-			    }
-                            i-=5;
-                            seat[i]->Highlight();
-                            seat[i]->Draw(LIGHTGREEN);
-                            if(!manualmode){
-                                for(j=i;j<i+Seats_Needed&&j<25;j++)
-                                {
-                                    seat[j]->Draw(LIGHTGREEN);
-                                }
-                            }
-                            seat[i]->Highlight();
-			}
-                    }
-		    break;
-                    case DOWN:
-                    {
-                        if(i>=0&&i<20)
-                        {
-                            for(j=0;j<25;j++)
-                            {
-                                //seat[j]->Select=false;
-                                seat[j]->Draw();
-                            }
-                            i+=5;
-			    seat[i]->Highlight();
-                            seat[i]->Draw(LIGHTGREEN);
-			    if(!manualmode){
-                                for(j=i;j<i+Seats_Needed&&j<25;j++)
-                                {
-                                    seat[j]->Draw(LIGHTGREEN);
-                                }
-                            }
-                            seat[i]->Highlight();
-                        }
-                    }
-                    break;
-                }
-	    }
-            break;
-	    case ENTER:
-            {
-                if(!manualmode)
-                {
-                    for(j=i;j<i+Seats_Needed&&j<25;j++)
-                    {
-                        if(!(seat[j]->Occupied))
-                        {
-                            seat[j]->Select=true;
-                            seat[j]->Draw();
-                        }
-		    }
-                    window(20,24,50,25);
-		    clrscr();
-                    gotoxy(1,1);
-                    cprintf("Do you want to continue(y/n)");
-                    if(tolower(getch())=='y')
-                    {
-                        for(j=i;j<i+Seats_Needed&&j<25;j++)
-                        {
-                            seat[j]->Occupied=true;
-                            seat[j]->Select=false;
-                            seat[j]->Draw();
-                        }
-			window(20,24,50,25);
-                        clrscr();
-			window(1,1,80,25);
-                        l=1;
-                        break;
-                    }
-                    else{
-                        window(1,1,80,25);
-                        clrscr();
-                        for(j=i;j<i+Seats_Needed&&j<25;j++)
-                        {
-                            seat[j]->Select=false;
-                        }
-			EnterSeats();
-                    }
-		}
-                else{           //MANUAL MODE
-                    if(seats_selected!=Seats_Needed)
-                    {
-                        if(!(seat[i]->Occupied))
-                        {
-                            seat[i]->Select=true;
-                            seat[i]->Draw();
-                            seats_selected++;
-                        }    
-                    }
-		    else{
-                        window(20,24,50,25);
-		    clrscr();
-                    gotoxy(1,1);
-                    cprintf("Do you want to continue(y/n)");
-                    if(tolower(getch())=='y')
-                    {
-                        for(j=0;j<25;j++)
-                        {
-                            if(seat[j]->Select==true)
-                            {
-                                seat[j]->Occupied=true;
-                                seat[j]->Select=false;
 				seat[j]->Draw();
-                            }                           
+			    }
+			    seat[++i]->Highlight();
+			    seat[i]->Draw(LIGHTGREEN);
+			    if(!manualmode){
+				for(j=i;j<i+Seats_Needed&&j<25;j++)
+				{
+				    seat[j]->Draw(LIGHTGREEN);
+				}
+			    }
+			    seat[i]->Highlight();
+			}
+		    }
+		    break;
+		    case LEFT:
+		    {
+			if(i>0){
+			    for(j=0;j<25;j++)
+			    {
+				//seat[j]->Select=false;
+				seat[j]->Draw();
+			    }
+			    seat[--i]->Highlight();
+			    seat[i]->Draw(LIGHTGREEN);
+			    if(!manualmode){
+				for(j=i;j<i+Seats_Needed&&j<25;j++)
+				{
+				    seat[j]->Draw(LIGHTGREEN);
+				}
+			    }
+			    seat[i]->Highlight();
+			}
+		    }
+		    break;
+		    case UP:
+		    {
+			if(i>4&&i<25)
+			{
+			    for(j=0;j<25;j++)
+			    {
+				//seat[j]->Select=false;
+				seat[j]->Draw();
+			    }
+			    i-=5;
+			    seat[i]->Highlight();
+			    seat[i]->Draw(LIGHTGREEN);
+			    if(!manualmode){
+				for(j=i;j<i+Seats_Needed&&j<25;j++)
+				{
+				    seat[j]->Draw(LIGHTGREEN);
+				}
+			    }
+			    seat[i]->Highlight();
+			}
+		    }
+		    break;
+		    case DOWN:
+		    {
+			if(i>=0&&i<20)
+			{
+			    for(j=0;j<25;j++)
+			    {
+				//seat[j]->Select=false;
+				seat[j]->Draw();
+			    }
+			    i+=5;
+			    seat[i]->Highlight();
+			    seat[i]->Draw(LIGHTGREEN);
+			    if(!manualmode){
+				for(j=i;j<i+Seats_Needed&&j<25;j++)
+				{
+				    seat[j]->Draw(LIGHTGREEN);
+				}
+			    }
+			    seat[i]->Highlight();
+			}
+		    }
+		    break;
+		}
+	    }
+	    break;
+	    case ENTER:
+	    {
+		if(!manualmode)
+		{
+		    for(j=i;j<i+Seats_Needed&&j<25;j++)
+		    {
+			if(!(seat[j]->Occupied))
+			{
+			    seat[j]->Select=true;
+			    seat[j]->Draw();
+			}
+		    }
+		    window(20,24,50,25);
+		    clrscr();
+		    gotoxy(1,1);
+		    cprintf("Do you want to continue(y/n)");
+		    if(tolower(getch())=='y')
+		    {
+			for(j=i;j<i+Seats_Needed&&j<25;j++)
+			{
+			    seat[j]->Occupied=true;
+			    seat[j]->Select=false;
+			    seat[j]->Draw();
+			}
+			window(20,24,50,25);
+			clrscr();
+			window(1,1,80,25);
+			l=1;
+			break;
+		    }
+		    else{
+			window(1,1,80,25);
+			clrscr();
+			for(j=i;j<i+Seats_Needed&&j<25;j++)
+			{
+			    seat[j]->Select=false;
+			}
+			EnterSeats();
+		    }
+		}
+		else{           //MANUAL MODE
+		    if(seats_selected!=Seats_Needed)
+		    {
+			if(!(seat[i]->Occupied))
+			{
+			    seat[i]->Select=true;
+			    seat[i]->Draw();
+			    seats_selected++;
+			}
+		    }
+		    else{
+			window(20,24,50,25);
+		    clrscr();
+		    gotoxy(1,1);
+		    cprintf("Do you want to continue(y/n)");
+		    if(tolower(getch())=='y')
+		    {
+			for(j=0;j<25;j++)
+			{
+			    if(seat[j]->Select==true)
+			    {
+				seat[j]->Occupied=true;
+				seat[j]->Select=false;
+				seat[j]->Draw();
+			    }
 			}
 			window(20,24,50,25);
 			clrscr();
@@ -1508,7 +1585,7 @@ void CustomerConfirm()
     //TextBox *cc = new TextBox(30,10,20,1,Choice.Mn,0,CYAN,1,CustomerConfirm);
     TextBox *ccNext = new TextBox(72,23,8,1,"NEXT",0,CYAN,2,welcome);
     TextBox *ccBack = new TextBox(1,23,8,1,"BACK",0,CYAN,3,EnterSeats);
-    Menu mCustomerConfirm(5,"Confirm Your Booking");
+    Menu mCustomerConfirm(6,"Confirm Your Booking");
     //mCustomerConfirm.AddItem(cc);
     mCustomerConfirm.AddItem(ccNext);
     mCustomerConfirm.AddItem(ccBack);
@@ -1517,7 +1594,7 @@ void CustomerConfirm()
     char *time=ctime(&t),temp[50],name[50];
     strcpy(temp,time);
     int j;
-    for(int i=0;i<strlen(temp);i++)
+    for(int i=0;i<=strlen(temp);i++)
     {
 	if((isalpha(temp[i])==0)&&(isspace(temp[i])==0)&&(ispunct(temp[i])==0))
 	{
@@ -1526,6 +1603,7 @@ void CustomerConfirm()
 	}
     }
     name[0]='M';
+    strcpy(Choice.ID,name);
     name[strlen(name)-1]='.';
     strcat(name,"txt");
     textcolor(WHITE);
@@ -1535,37 +1613,41 @@ void CustomerConfirm()
     gotoxy(15,8);
     cout<<"               Customer Receipt";
     gotoxy(15,9);
-    cout<<"-------------------------------------------";
+    cout<<"Booking Id: "<<Choice.ID<<endl;
     gotoxy(15,10);
-    cout<<"Movie Selected  	: "<<Choice.Mn;
-    gotoxy(15,11);
-    cout<<"Time	        : "<<Choice.Timing;
-    gotoxy(15,12);
-    cout<<"Price(Per Seat} 	: "<<Choice.Price;
-    gotoxy(15,13);
-    cout<<"No. Of Seats   	:  "<<Choice.Seats;
-    gotoxy(15,14);
     cout<<"-------------------------------------------";
+    gotoxy(15,11);
+    cout<<"Movie Selected  	: "<<Choice.Mn;
+    gotoxy(15,12);
+    cout<<"Time	        : "<<Choice.Timing;
+    gotoxy(15,13);
+    cout<<"Price(Per Seat} 	: "<<Choice.Price;
+    gotoxy(15,14);
+    cout<<"No. Of Seats   	:  "<<Choice.Seats;
     gotoxy(15,15);
-    cout<<"   		       Subtotal : "<<Subtotal;
+    cout<<"-------------------------------------------";
     gotoxy(15,16);
-    cout<<"   		       	    GST : 18.5%";
+    cout<<"   		       Subtotal : "<<Subtotal;
     gotoxy(15,17);
-    cout<<"   	       Convinience Fees : 100";
+    cout<<"   		       	    GST : 18.5%";
     gotoxy(15,18);
-    cout<<"   	         Service Charge : 2.5%";
+    cout<<"   	       Convinience Fees : 25";
     gotoxy(15,19);
-    cout<<"___________________________________________";
+    cout<<"   	         Service Charge : 2.5%";
     gotoxy(15,20);
-    float FinalPrice=Subtotal*(1.21)+100;
+    cout<<"___________________________________________";
+    gotoxy(15,21);
+    float FinalPrice=Subtotal*(1.21)+25;
     cout<<"	     		    Total Price : "<<FinalPrice;
     switch(Navigate(mCustomerConfirm))
     {
-	case 2: fstream fil;
+	case 2: Choice.Status=true;
+	 fstream fil;
 	 fil.open(name,ios::out);
 	 fil<<"  	           Movie Time"<<endl;
 	 fil<<"               Customer Receipt"<<endl;
 	 fil<<"	   "<<time;
+	 fil<<"Booking Id : "<<Choice.ID<<endl;
 	 fil<<"-------------------------------------------"<<endl;
 	 fil<<"Movie Selected  	: "<<Choice.Mn<<endl;
 	 fil<<"Time	       		: "<<Choice.Timing<<endl;
@@ -1583,16 +1665,80 @@ void CustomerConfirm()
 	 gotoxy(12,30);
 	 cout<<"Thank you!!\nYour Receipt has been Saved to:"<<name;
 	 getch();
-	 exit(0);
+	 {
+	 fstream fil1;
+	 fil1.open("Info.dat",ios::app|ios::binary);
+	 fil1.write((char*)&Choice,sizeof(Choice));
+	 fil1.close();
+	 }
+	 CustomerIndex();
 	 break;
-	 case 3:
-	 CustomerHome();
-	 break;
-/*	default:
+	 //case 3:
+	 //CustomerHome();
+	 //break;
+	default:
 	{
 	    mCustomerConfirm.EnableClickHandler(currentitem);
 	}
-	break;*/
+	break;
+    }
+}
+
+void CancelTicket()
+{
+    clrscr();
+    _setcursortype(_NOCURSOR);
+    gotoxy(5,11);
+    cout<<"ENTER YOUR BOOKING ID:";
+    TextBox *cid = new TextBox(30,10,20,1,"",0,GREEN,0,CancelTicket);
+    TextBox *cidNext = new TextBox(72,23,8,1,"NEXT",0,CYAN,2,CustomerHome);
+    TextBox *cidBack = new TextBox(1,23,8,1,"BACK",0,CYAN,3,CustomerHome);
+    cid->SetReadOnly(false);
+    Menu mCancelTicket(7,"Cancel Ticket");
+    mCancelTicket.AddItem(cid);
+    mCancelTicket.AddItem(cidNext);
+    mCancelTicket.AddItem(cidBack);
+    mCancelTicket.Draw();
+    int found=0;
+    MOVIE Movie;
+    switch(Navigate(mCancelTicket))
+    {
+	case 2:
+	{
+		fstream fil;
+		fil.open("Info.dat",ios::out|ios::in|ios::binary);
+		while((fil.read((char*)&Movie,sizeof(Movie)))&&!found)
+		{
+			if((strcmp(Movie.ID,cid->GetText())==0)&&(Movie.Status=true))
+			{
+				Movie.Status=false;
+				fil.seekg(-1*sizeof(Movie),ios::cur);
+				fil.write((char*)&Movie,sizeof(Movie));
+				found++;
+			}
+		}
+		if(!found)
+		{
+			clrscr();
+			cout<<"Booking Not Found!";
+			getch();
+		}
+		else
+		{
+			clrscr();
+			cout<<"Ticket Successfully Cancelled...";
+			getch();
+		}
+		CustomerIndex();
+		//mCancelTicket.EnableClickHandler(currentitem);
+	}
+	break;
+	default:
+	{
+	    CustomerIndex();
+	    //mCancelTicket.EnableClickHandler(currentitem);
+	}
+	break;
     }
 }
 
