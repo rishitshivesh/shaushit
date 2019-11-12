@@ -15,7 +15,7 @@ const int RIGHT = 77;
 const int ENTER = 13;
 const int Exit = 404;
 
-int Max_Seats=25;   
+int Max_Seats=25;
 int currentitem = 0;
 int currentmenu = 0;
 int TotalMenus=-1;
@@ -23,13 +23,14 @@ int TotalMenus=-1;
 enum bool{false,true};
 bool Admin_LoggedIn = false;
 bool Customer_LoggedIn = false;
-
+bool debug_mode = false;
 int Navigate();
 void welcome();
 void Customerlogin();
 void CustomerSignUp();
 void CustomerTime();
 void CustomerHome();
+void CustomerConfirm();
 void AdminLogin();
 void AdminSignUp();
 void AdminHome();
@@ -50,8 +51,9 @@ class MOVIE
     char Mn[80],Timing[5];
     float Price;
     char* MovieName();
+    int Seats;
 
-};
+}Choice;
 char *MOVIE::MovieName()
 {
     return Mn;
@@ -68,7 +70,7 @@ public:
     void inputdata(char *name, char *username,char *password, char *email, char *phone);
     int CheckPassword(char *password);
 
- 
+
 };
 int CUSTOMER::CheckPassword(char *password)
 {
@@ -211,7 +213,7 @@ void TextBox::Draw()
     {
         w[i]=char(196);
         //cprintf("-");
-        h[i+1] = ' ';
+	h[i+1] = ' ';
     }
     h[a] = char(179);
     cprintf(w);
@@ -237,9 +239,9 @@ void TextBox::Highlight(char a)
     {
         _setcursortype(_NOCURSOR);
         char w[70] = " ";
-        for(int i = 0;i<Width;i++)
+	for(int i = 0;i<Width;i++)
             w[i] = a;
-        textcolor(RED);
+	textcolor(RED);
         gotoxy(X,Y+Height+1);
         cprintf(w);
         textcolor(WHITE);
@@ -250,7 +252,7 @@ void TextBox::Highlight(char a)
             w[i] = a;
         textcolor(RED);
         gotoxy(X,Y+Height+1);
-        cprintf(w);
+	cprintf(w);
         textcolor(WHITE);
 
         int ch;
@@ -263,9 +265,9 @@ void TextBox::Highlight(char a)
             curx=X+strlen(Caption)+2;
             gotoxy(curx,Y+(Height%2));
             _setcursortype(_NORMALCURSOR);
-            ch=getch();
+	    ch=getch();
             // if(ch==0)
-            // { ch=getch();
+	    // { ch=getch();
             switch (ch)
             {
                 case 8: //backspace
@@ -276,9 +278,9 @@ void TextBox::Highlight(char a)
                         curpos--;
                         len--;
                     }
-                break;
+		break;
             }
-            //}//if(ch==0) ended
+	    //}//if(ch==0) ended
             if(isprint(ch))
             {
                 Caption[curpos]=ch;
@@ -289,9 +291,9 @@ void TextBox::Highlight(char a)
                 {
                     Caption[curpos]=0;
                     HiddenText[curpos]=0;
-                    Draw();
+		    Draw();
                     break;
-                }
+		}
                 else
                 {
                     curpos++;
@@ -312,22 +314,22 @@ void TextBox::Highlight(char a)
     cprintf(w);
     textcolor(WHITE);
 }
-    
+
 void TextBox::SetReadOnly(bool ReadOnly)
 {
     bReadOnly = ReadOnly;
 }
-    
+
 void TextBox::SetText(char text[])
 {
     if (X + strlen(Caption) <= X + Width - strlen(" ") && !bReadOnly)
     {
-        strcat(Caption,text);
-        int i;
-        for(i=0;i<strlen(Caption);i++)
-        HiddenText[i] = '*';
-        HiddenText[i]=0;  
-        Draw();
+	strcat(Caption,text);
+	int i;
+	for(i=0;i<strlen(Caption);i++)
+	HiddenText[i] = '*';
+	HiddenText[i]=0;
+	Draw();
     }
 }
 
@@ -339,7 +341,7 @@ char *TextBox::GetText()
 {
     return Caption;
 }
-    
+
 void TextBox::Clear()
 {
     strcpy(Caption,"");
@@ -362,24 +364,33 @@ struct THEATRE
 /*****************************************SEAT***************************************************************/
 class Seat
 {
-    int X,Y,Color,SColor;
+    int X,Y,Color,SColor,I;
+    char A;
 public:
     int ID;
+    char name[3];
     bool Select;
     bool Occupied;
-    Seat(int x, int y,int color=YELLOW,int scolor = GREEN, int Id = 0);
+    Seat(int x, int y,int color=YELLOW,int scolor = GREEN, int Id = 0,char a ='A',int i=1);
     void Draw(int color = YELLOW);
-    void Highlight(); 
+    void Highlight();
 };
-void Seat::Seat(int x, int y,int color,int scolor, int Id)
+void Seat::Seat(int x, int y,int color,int scolor, int Id,char a,int i)
 {
     X=x;
     Y=y;
     ID=Id;
     Color = color;
     SColor = scolor;
+    I=i;
+    A=a;
     Select=false;
     Occupied = false;
+    name[0]=A;
+    char b[10];
+    itoa(I,b,10);
+    name[1]=b[0];
+    //strcat(name,b);
 }
 void Seat::Draw(int color)
 {
@@ -387,8 +398,8 @@ void Seat::Draw(int color)
     clrscr();
     gotoxy(1,1);
     if(Select){
-        textcolor(SColor);
-        cprintf("%c",178);
+	textcolor(SColor);
+	cprintf("%c",178);
     }
     else if(Occupied){
         textcolor(DARKGRAY);
@@ -425,9 +436,9 @@ public:
     char Caption[80];
     Menu(int p,char a[80])
     {
-        pageid = p;
-        itemnumber=-1;
-        currentitem=0;
+	pageid = p;
+	itemnumber=-1;
+	currentitem=0;
         TotalMenus++;
         strcpy(Caption,a);
         menubar = NULL;
@@ -447,9 +458,12 @@ public:
             delete menubar;
             for(int i = 0;i<itemnumber;i++)
                 delete textbox[i];
-            //delete this;
-
-        }
+            if(debug_mode)
+            {
+		cout<<Caption<<"deleted";
+                getch();
+	    }
+	}
 };
 void Menu::Drawbox(int l,int b,int x ,int y,char text[])
 {
@@ -462,8 +476,8 @@ void Menu::Drawbox(int l,int b,int x ,int y,char text[])
     h[0] = char(179)    ;
     for(int i = 0;i<l;i++)
     {
-        w[i]=char(196);
-        h[i+1] = ' ';
+	w[i]=char(196);
+	h[i+1] = ' ';
     }
     h[a] = char(179);
     cprintf(w);
@@ -472,7 +486,7 @@ void Menu::Drawbox(int l,int b,int x ,int y,char text[])
     {
         gotoxy(x,n);
         cprintf(h);
-        n++;
+	n++;
     }
     gotoxy(x,n);
     cprintf(w);
@@ -524,11 +538,11 @@ void Menu::Scroll(int current_item,int dir)
              currentitem++;
              textbox[(current_item+1)]->Highlight('*');
         }
-        else if(current_item ==itemnumber)
+	else if(current_item ==itemnumber)
         {
-             currentitem = 0;
-             textbox[currentitem]->Highlight('*');
-        }
+	     currentitem = 0;
+	     textbox[currentitem]->Highlight('*');
+	}
         }
           break;
           case UP:
@@ -537,14 +551,14 @@ void Menu::Scroll(int current_item,int dir)
         {
              currentitem--;
              textbox[currentitem]->Highlight('*');
-        }
+	}
         else if(currentitem == 0)
-        {
+	{
 	     currentitem = itemnumber;
 	     textbox[currentitem]->Highlight('*');
-	}
-	   }
-	break;
+        }
+           }
+        break;
     }
 }
 void Menu::EnableClickHandler(int current_item)
@@ -558,39 +572,39 @@ int Navigate(Menu menu)
     int p;
     do
     {
-	a=getch();
-	switch(tolower(a))
-	{
-	    case 0:
-	    {
+        a=getch();
+        switch(tolower(a))
+        {
+            case 0:
+            {
 	    b = getch();
-	    switch(b)
+            switch(b)
 	    {
 		case DOWN:
 		case LEFT://sahi hai mere bhai
-		{
-		    menu.Scroll(currentitem,DOWN);
-
-		}
-		break;
-		case UP:
-		case RIGHT:
-		{
+                {
+                    menu.Scroll(currentitem,DOWN); 
+                
+                }
+                break;
+                case UP:
+                case RIGHT:
+                {
 		    menu.Scroll(currentitem,UP);
-
+                    
 		}
 		break;
 	    }// switch b ends
-	    }// case :0 ends
+            }// case :0 ends
+            break;
+            case 13:{
+                return menu.ReturnID(currentitem);
+            }
+            break;
+            case 'e':
+            exit(0);
 	    break;
-	    case 13:{
-		return menu.ReturnID(currentitem);
-	    }
-	    break;
-	    case 'e':
-	    exit(0);
-	    break;
-	    // default:
+            // default:
 	    //     return (int)a;
 	    // break;
 	}// switch a ends
@@ -615,11 +629,11 @@ void welcome()
             if(Admin_LoggedIn)
                 AdminHome();
                 
-            else {AdminLogin();}
+	    else {AdminLogin();}
         }
-        break;
-        case 1:
-        {
+	break;
+	case 1:
+	{
             if(Customer_LoggedIn)
                 CustomerHome();
                 
@@ -654,7 +668,7 @@ void AdminSignUp()
     pAdminSignUp.AddItem(pPhone);
     pAdminSignUp.AddItem(pemail);
     pAdminSignUp.AddItem(pNext);
-    pAdminSignUp.Draw(); 
+    pAdminSignUp.Draw();
     pPassword->HideText(true);
 
     if(Navigate(pAdminSignUp)==5){
@@ -706,11 +720,11 @@ void CustomerSignUp()
         {
             CUSTOMER Customer;
 
-            Customer.inputdata(pName->GetText(),pUsername->GetText(),pPassword->GetText(),pemail->GetText(),pPhone->GetText());
+	    Customer.inputdata(pName->GetText(),pUsername->GetText(),pPassword->GetText(),pemail->GetText(),pPhone->GetText());
             if(CheckFile(pUsername->GetText())==2)
-            {
-                gotoxy(15,20);
-                cprintf("User Exists. Press Enter to go to LoginPage!");
+	    {
+		gotoxy(15,20);
+		cprintf("User Exists. Press Enter to go to LoginPage!");
                 if(getch()==13)
                     Customerlogin();
             }
@@ -719,11 +733,11 @@ void CustomerSignUp()
                 fstream fil;
                 fil.open("customertext.dat",ios::binary|ios::app);
                 fil.write((char *)&Customer,sizeof(Customer));
-                fil.close();
+		fil.close();
                 Customerlogin();
-            }
-        }
-        break;
+	    }
+	}
+	break;
         default:
             mCustomerSignUp.EnableClickHandler(currentitem);
         break;
@@ -747,7 +761,7 @@ void Customerlogin()
     mCustomerlogin.AddItem(pCustomerSignUp);
     mCustomerlogin.AddItem(pNext);
     mCustomerlogin.AddItem(pBack);
-    mCustomerlogin.Draw(); 
+    mCustomerlogin.Draw();
     pPassword->HideText(true);
     switch(Navigate(mCustomerlogin))
     {
@@ -758,11 +772,11 @@ void Customerlogin()
         {
             if(CheckFile(pUsername->GetText(),pPassword->GetText())==1)
             {
-                Customer_LoggedIn =true;
+		Customer_LoggedIn =true;
                 CustomerHome();
-                
-            }
-            else{
+
+	    }
+	    else{
                 gotoxy(20,14);
                 cprintf("Incorrect Password or Username,Press Enter to Retry");
                 if(getch()==13)
@@ -771,7 +785,7 @@ void Customerlogin()
         }
         break;
         default:
-            mCustomerlogin.EnableClickHandler(currentitem);
+	    mCustomerlogin.EnableClickHandler(currentitem);
         break;
     }
 }
@@ -797,11 +811,11 @@ void AdminLogin()
     {
         case 3:
             mAdminLogin.EnableClickHandler(currentitem);
-        break;
+	break;
         case 2:
-        {
-            if(AdminCheckID(pUsername->GetText(),pPassword->GetText())==1)
-            {
+	{
+	    if(AdminCheckID(pUsername->GetText(),pPassword->GetText())==1)
+	    {
                 Admin_LoggedIn=true;
                 AdminHome();
             }
@@ -810,11 +824,11 @@ void AdminLogin()
                 cprintf("Incorrect Password,Press Enter to Retry");
                 if(getch()==13)
                     AdminLogin();
-            }
+	    }
         }
-        break;
-        default:
-            mAdminLogin.EnableClickHandler(currentitem);
+	break;
+	default:
+	    mAdminLogin.EnableClickHandler(currentitem);
         break;
     }
 }
@@ -823,12 +837,12 @@ void AdminHome()
 {
     clrscr();
     _setcursortype(_NOCURSOR);
-    TextBox *M_Settings = new TextBox(25,5,30,1,"Movie Settings",0,YELLOW,0,welcome);
+    TextBox *M_Settings = new TextBox(25,5,30,1,"Movie Settings",0,YELLOW,0,Movie_Settings);
     TextBox *T_Settings = new TextBox(25,8,30,1,"Theatre Settings",0,YELLOW,1,welcome);
     TextBox *D_Settings = new TextBox(25,11,30,1,"Database Settings",0,YELLOW,2,Database_Settings);
     TextBox *pAbout = new TextBox(25,14,30,1,"ABOUT",0,CYAN,3,welcome);
     TextBox *pBack = new TextBox(1,23,20,1,"BACK",0,CYAN,4,AdminLogin);
-    Menu mAdminHome(3,"Hello Motu Admin");
+    Menu mAdminHome(3,"Hello Admin");
     mAdminHome.AddItem(M_Settings);
     mAdminHome.AddItem(T_Settings);
     mAdminHome.AddItem(D_Settings);
@@ -838,25 +852,25 @@ void AdminHome()
     switch(Navigate(mAdminHome))
     {
         case 4:
-        {
-                window(20,24,50,25);
-                clrscr();
-                gotoxy(1,1);
-                cprintf("Do you want to LOG OUT(y/n)");
+
+	    window(20,24,50,25);
+	    clrscr();
+            gotoxy(1,1);
+            cprintf("Do you want to LOG OUT(y/n)");
                 if(tolower(getch())=='y')
                 {
                     window(20,24,50,25);
                     clrscr();
                     window(1,1,80,25);
                     Admin_LoggedIn=false;
-                    mAdminHome.EnableClickHandler(currentitem);
+		    mAdminHome.EnableClickHandler(currentitem);
                     break;
-                }
-                else{
-                    window(1,1,80,25);
+		}
+		else{
+		    window(1,1,80,25);
                     AdminHome();
                 } 
-        }
+        
         break;
         default:
             mAdminHome.EnableClickHandler(currentitem);
@@ -869,205 +883,281 @@ void CustomerHome()
     window(1,1,80,25);
     //clrscr();
     _setcursortype(_NOCURSOR);
-    TextBox *m1 = new TextBox(5,5,10,5,"Movie 1",0,YELLOW,0,EnterSeats);
-    TextBox *m2 = new TextBox(50,5,10,5,"Movie 2",0,GREEN,1,EnterSeats);
-    TextBox *m3 = new TextBox(5,12,10,5,"Movie 3",0,CYAN,2,EnterSeats);
-    TextBox *m4 = new TextBox(50,12,10,5,"Movie 4",0,CYAN,3,EnterSeats);
+    MOVIE Movie;
+    TextBox *m1 = new TextBox(10,10,10,5,"Movie 1",0,YELLOW,0,EnterSeats);
+    TextBox *m2 = new TextBox(45,10,10,5,"Movie 2",0,GREEN,1,EnterSeats);
     TextBox *pBack = new TextBox(1,23,8,1,"BACK",0,CYAN,4,Customerlogin);
     Menu mCustomerHome(3,"Now Playing");
     mCustomerHome.AddItem(m1);
     mCustomerHome.AddItem(m2);
-    mCustomerHome.AddItem(m3);
-    mCustomerHome.AddItem(m4);
     mCustomerHome.AddItem(pBack);
     mCustomerHome.Draw();
+    fstream fil1,fil2;
     switch(Navigate(mCustomerHome))
     {
-        case 4:
-        {
-                window(20,24,50,25);
-                clrscr();
-                gotoxy(1,1);
-                cprintf("Do you want to LOG OUT(y/n)");
-                if(tolower(getch())=='y')
-                {
-                    window(20,24,50,25);
-                    clrscr();
-                    window(1,1,80,25);
-                    Customer_LoggedIn=false;
-                    mCustomerHome.EnableClickHandler(currentitem);
-                    break;
-                }
-                else{
-                    window(1,1,80,25);
-                    CustomerHome();
-                } 
-        }
-        break;
-        default:
-            mCustomerHome.EnableClickHandler(currentitem);
-        break;
+	case 0: fil1.open("movie1.dat",ios::in|ios::binary);
+		while(fil1.read((char*)&Movie,sizeof(Movie)))
+		Choice=Movie;
+		fil1.close();
+		mCustomerHome.EnableClickHandler(currentitem);
+		break;
+	case 1: fil2.open("movie2.dat",ios::in|ios::binary);
+		while(fil2.read((char*)&Movie,sizeof(Movie)))
+		Choice=Movie;
+		fil1.close();
+		mCustomerHome.EnableClickHandler(currentitem);
+		break;
+	case 4:
+	{
+		window(20,24,50,25);
+		clrscr();
+		gotoxy(1,1);
+		cprintf("Do you want to LOG OUT(y/n)");
+		if(tolower(getch())=='y')
+		{
+		    window(20,24,50,25);
+		    clrscr();
+		    window(1,1,80,25);
+		    Customer_LoggedIn=false;
+		    mCustomerHome.EnableClickHandler(currentitem);
+		    break;
+		}
+		else{
+		    window(1,1,80,25);
+		    CustomerHome();
+		}
+	}
+	break;
+	default:
+	    mCustomerHome.EnableClickHandler(currentitem);
+	break;
     }
     //getch();
 
 }
-// void Movie_Settings()
-// {
-//     clrscr();
-//     _setcursortype(_NOCURSOR);
-//     delete menu[currentmenu];
-//     flushall();
-//     currentmenu=4;
-//     textcolor(GREEN);
-//     gotoxy(1,4);
-//     cprintf("%s","Movie 1 :");
-//     gotoxy(25,4);
-//     cprintf("%s","NAME");
-//     TextBox *pName1 = new TextBox(11,5,68,1,"NAME",0,YELLOW,0,welcome);
-//     pName1.SetReadOnly(false);
-//     gotoxy(11,8);
-//     cprintf("%s","Timings");
-//     TextBox *pTime1 = new TextBox(11,9,10,1,"TIME",0,YELLOW,1,welcome);
-//     pTime1.SetReadOnly(false);
-//     gotoxy(24,8);
-//     cprintf("%s","Price");
-//     TextBox *pPrice1 = new TextBox(24,9,10,1,"PRICE",0,YELLOW,2,welcome);
-//     pPrice1.SetReadOnly(false);
-//     gotoxy(1,13);
-//     cprintf("%s","Movie 2 :");
-//     gotoxy(25,13);
-//     cprintf("%s","NAME");
-//     TextBox *pName2 = new TextBox(11,14,68,1,"NAME",0,YELLOW,3,welcome);
-//     pName2.SetReadOnly(false);
-//     gotoxy(11,17);
-//     cprintf("%s","Timings");
-//     TextBox *pTime2 = new TextBox(11,18,10,1,"TIME",0,YELLOW,4,welcome);
-//     pTime2.SetReadOnly(false); 
-//     gotoxy(24,17);
-//     cprintf("%s","Price");
-//     TextBox *pPrice2 = new TextBox(24,18,10,1,"PRICE",0,YELLOW,5,welcome);
-//     pPrice2.SetReadOnly(false);
+void Movie_Settings()
+{
+    clrscr();
+    _setcursortype(_NOCURSOR);
+    textcolor(GREEN);
+    gotoxy(1,4);
+    cprintf("%s","Movie 1 :");
+    gotoxy(25,4);
+    cprintf("%s","NAME");
+    TextBox *pName1 = new TextBox(11,5,68,1,"NAME",0,YELLOW,0,welcome);
+    pName1->SetReadOnly(false);
+    gotoxy(11,8);
+    cprintf("%s","Timings");
+    TextBox *pTime1 = new TextBox(11,9,10,1,"TIME",0,YELLOW,1,welcome);
+    pTime1->SetReadOnly(false);
+    gotoxy(24,8);
+    cprintf("%s","Price");
+    TextBox *pPrice1 = new TextBox(24,9,10,1,"PRICE",0,YELLOW,2,welcome);
+    pPrice1->SetReadOnly(false);
+    gotoxy(1,13);
+    cprintf("%s","Movie 2 :");
+    gotoxy(25,13);
+    cprintf("%s","NAME");
+    TextBox *pName2 = new TextBox(11,14,68,1,"NAME",0,YELLOW,3,welcome);
+    pName2->SetReadOnly(false);
+    gotoxy(11,17);
+    cprintf("%s","Timings");
+    TextBox *pTime2 = new TextBox(11,18,10,1,"TIME",0,YELLOW,4,welcome);
+    pTime2->SetReadOnly(false);
+    gotoxy(24,17);
+    cprintf("%s","Price");
+    TextBox *pPrice2 = new TextBox(24,18,10,1,"PRICE",0,YELLOW,5,welcome);
+    pPrice2->SetReadOnly(false);
 
-//     TextBox *pSubmit = new TextBox(50,23,20,1,"SUBMIT",0,CYAN,6,AdminHome);
-//     TextBox *pBack = new TextBox(10,23,20,1,"BACK",0,CYAN,7,AdminHome);
+    TextBox *pSubmit = new TextBox(50,23,20,1,"SUBMIT",0,CYAN,6,AdminHome);
+    TextBox *pBack = new TextBox(10,23,20,1,"BACK",0,CYAN,7,AdminHome);
 
-//     menu[currentmenu]= new Menu(4,"Movie Settings");
-//     menu[currentmenu].AddItem(pName1);
-//     menu[currentmenu].AddItem(pPrice1);
-//     menu[currentmenu].AddItem(pTime1);
-//     menu[currentmenu].AddItem(pName2);
-//     menu[currentmenu].AddItem(pPrice2);
-//     menu[currentmenu].AddItem(pTime2);
-//     menu[currentmenu].AddItem(pSubmit);
-//     menu[currentmenu].AddItem(pBack);
-//     menu[currentmenu].Draw();
-//     MOVIE movie,temp;
-//     fstream fil;
-//     fil.open("movie.dat",ios::binary|ios::in|ios::out);
-//     switch(Navigate())
-//     {
-//         case 6:
-//             strcpy(movie.Mn,pName1.GetText());
-//             strcpy(movie.Timing,pTime1.GetText());
-//             movie.Price=atof(pPrice1.GetText());
-            
-//             while(fil.read((char*)&temp,sizeof(temp)))
-//             {
-//                 if(temp.Mn==movie.Mn)
-//                 {
-//                     int pos = (-1 * sizeof(temp));
-//                     fil.seekp(pos, ios::cur);
-//                     fil.write((char *)&movie,sizeof(movie)); 
-//                     //return;
-//                 }
-//                 // else{
-//                 //     fil.write((char *)&movie,sizeof(movie));
-//                 //     fil.close();
-//                 // }
-//             }
-//             fil.write((char *)&movie,sizeof(movie));
-//             fil.close();
-//             menu[currentmenu].EnableClickHandler(currentitem);
-//         break;
-//         default:
-//             menu[currentmenu].EnableClickHandler(currentitem);
-//         break;
-//     }
+    Menu mMovie_Settings(4,"Movie Settings");
+    mMovie_Settings.AddItem(pName1);
+    mMovie_Settings.AddItem(pPrice1);
+    mMovie_Settings.AddItem(pTime1);
+    mMovie_Settings.AddItem(pName2);
+    mMovie_Settings.AddItem(pPrice2);
+    mMovie_Settings.AddItem(pTime2);
+    mMovie_Settings.AddItem(pSubmit);
+    mMovie_Settings.AddItem(pBack);
 
-// }
- void Database_Settings()
- {
-     clrscr();
-     _setcursortype(_NOCURSOR);
-     textcolor(GREEN);
-     gotoxy(1,4);
-     cprintf("%s","Movie 1 :");
-     gotoxy(25,4);
-     cprintf("%s","NAME");
-     TextBox *pName1 = new TextBox(11,5,68,1,"NAME",0,YELLOW,0,welcome);
-     pName1->SetReadOnly(false);
-     gotoxy(11,8);
-     cprintf("%s","Timings");
-     TextBox *pTime1 = new TextBox(11,9,10,1,"TIME",0,YELLOW,1,welcome);
-     pTime1->SetReadOnly(false);
-     gotoxy(24,8);
-     cprintf("%s","Price");
-     TextBox *pPrice1 = new TextBox(24,9,10,1,"PRICE",0,YELLOW,2,welcome);
-     pPrice1->SetReadOnly(false);
-     gotoxy(1,13);
-     cprintf("%s","Movie 2 :");
-     gotoxy(25,13);
-     cprintf("%s","NAME");
-     TextBox *pName2 = new TextBox(11,14,68,1,"NAME",0,YELLOW,3,welcome);
-     pName2->SetReadOnly(false);
-     gotoxy(11,17);
-     cprintf("%s","Timings");
-     TextBox *pTime2 = new TextBox(11,18,10,1,"TIME",0,YELLOW,4,welcome);
-     pTime2->SetReadOnly(false);
-     gotoxy(24,17);
-     cprintf("%s","Price");
-     TextBox *pPrice2 = new TextBox(24,18,10,1,"PRICE",0,YELLOW,5,welcome);
-     pPrice2->SetReadOnly(false);
-     TextBox *pSubmit = new TextBox(50,23,20,1,"SUBMIT",0,CYAN,6,AdminHome);
-     TextBox *pBack = new TextBox(10,23,20,1,"BACK",0,CYAN,7,AdminHome);
+    MOVIE movie1,movie2,temp;
+    int found1=0,found2=0;
+    fstream fild,fil1,fil2;
+    fil1.open("movie1.dat",ios::binary|ios::in);
+    while(fil1.read((char *)&temp,sizeof(temp)))
+    {
+	pName1->Clear();
+	pName1->SetText(temp.Mn);
+    }
+    fil1.close();
+    fil2.open("movie2.dat",ios::binary|ios::in);
+    while(fil2.read((char *)&temp,sizeof(temp)))
+    {
+	pName2->Clear();
+	pName2->SetText(temp.Mn);
+    }
+    fil2.close();
 
-     Menu MDatabaseSettings(4,"Database Settings");
-     MDatabaseSettings.AddItem(pName1);
-     MDatabaseSettings.AddItem(pPrice1);
-     MDatabaseSettings.AddItem(pTime1);
-     MDatabaseSettings.AddItem(pName2);
-     MDatabaseSettings.AddItem(pPrice2);
-     MDatabaseSettings.AddItem(pTime2);
-     MDatabaseSettings.AddItem(pSubmit);
-     MDatabaseSettings.AddItem(pBack);
-     MDatabaseSettings.Draw();
-     MOVIE movie;
+    mMovie_Settings.Draw();
+
+    switch(Navigate(mMovie_Settings))
+    {
+	case 6:
+	    strcpy(movie1.Mn,pName1->GetText());
+	    strcpy(movie1.Timing,pTime1->GetText());
+	    movie1.Price=atof(pPrice1->GetText());
+	    strcpy(movie2.Mn,pName2->GetText());
+	    strcpy(movie2.Timing,pTime2->GetText());
+	    movie2.Price=atof(pPrice2->GetText());
+	    fild.open("database.dat",ios::binary|ios::in);
+	    fil1.open("movie1.dat",ios::binary|ios::out);
+	    fil2.open("movie2.dat",ios::binary|ios::out);
+	    while(fild.read((char *)&temp,sizeof(temp)))
+	    {
+		if(strcmpi(movie1.Mn,temp.Mn)==0)
+		    found1=1;
+		if(strcmpi(movie2.Mn,temp.Mn)==0)
+		    found2=1;
+	    }
+	    if(found1&&found2)
+	    {
+		fil1.write((char *)&movie1,sizeof(movie1));
+		fil2.write((char *)&movie2,sizeof(movie2));
+	    }
+	    else if(found1 && !found2)
+	    {
+		window(5,22,80,22);
+		gotoxy(1,1);
+		cout<<"Movie2 doesn't exists. Enter new movie in Database Settings. press Enter";
+		getch();
+		window(1,1,80,25);
+	    }
+	    else if(found2 && !found1)
+	    {
+		window(5,22,80,22);
+		gotoxy(1,1);
+		cout<<"Movie1 doesn't exists. Enter new movie in Database Settings. press Enter";
+		getch();
+		window(1,1,80,25);
+	    }
+	    else{
+		window(5,22,80,22);
+		gotoxy(1,1);
+		cout<<"Movies dont exist. Enter new movie in Database Settings. press Enter";
+		getch();
+		window(1,1,80,25);
+	    }
+
+	    fild.close();
+	    fil1.close();
+	    fil2.close();
+	    AdminHome();
+	    //menu[currentmenu].EnableClickHandler(currentitem);
+	break;
+	case 7:
+	    //
+	    AdminHome();
+	break;
+	default:
+	    mMovie_Settings.EnableClickHandler(currentitem);
+	break;
+    }
+}
+void Database_Settings()
+{
+    clrscr();
+    _setcursortype(_NOCURSOR);
+    textcolor(GREEN);
+    gotoxy(40,7);
+    cprintf("%s","Movie :");
+    gotoxy(11,8);
+    cprintf("%s","Name");
+    TextBox *pName1 = new TextBox(11,9,68,1,"NAME",0,YELLOW,0,welcome);
+    pName1->SetReadOnly(false);
+    gotoxy(11,12);
+    cprintf("%s","Timings");
+    TextBox *pTime1 = new TextBox(11,13,10,1,"TIME",0,YELLOW,1,welcome);
+    pTime1->SetReadOnly(false);
+    gotoxy(24,12);
+    cprintf("%s","Price");
+    TextBox *pPrice1 = new TextBox(24,13,10,1,"PRICE",0,YELLOW,2,welcome);
+    pPrice1->SetReadOnly(false);
+    // gotoxy(1,13);
+    // cprintf("%s","Movie 2 :");
+    // gotoxy(25,13);
+    // cprintf("%s","NAME");
+    // TextBox *pName2 = new TextBox(11,14,68,1,"NAME",0,YELLOW,3,welcome);
+    // pName2->SetReadOnly(false);
+    // gotoxy(11,17);
+    // cprintf("%s","Timings");
+    // TextBox *pTime2 = new TextBox(11,18,10,1,"TIME",0,YELLOW,4,welcome);
+    // pTime2->SetReadOnly(false);
+    // gotoxy(24,17);
+    // cprintf("%s","Price");
+    // TextBox *pPrice2 = new TextBox(24,18,10,1,"PRICE",0,YELLOW,5,welcome);
+    // pPrice2->SetReadOnly(false);
+
+    TextBox *pSubmit = new TextBox(50,23,20,1,"SUBMIT",0,CYAN,6,AdminHome);
+    TextBox *pBack = new TextBox(10,23,20,1,"BACK",0,CYAN,7,AdminHome);
+
+    Menu mDatabase_Settings(4,"Database Settings");
+    mDatabase_Settings.AddItem(pName1);
+    mDatabase_Settings.AddItem(pPrice1);
+    mDatabase_Settings.AddItem(pTime1);
+    //mDatabase_Settings.AddItem(pName2);
+    // mDatabase_Settings.AddItem(pPrice2);
+    // mDatabase_Settings.AddItem(pTime2);
+    mDatabase_Settings.AddItem(pSubmit);
+    mDatabase_Settings.AddItem(pBack);
+    mDatabase_Settings.Draw();
+    MOVIE movie,temp;
+    int found = 0;
     fstream fil;
-     fil.open("database.dat",ios::binary|ios::in|ios::app);
-     switch(Navigate(MDatabaseSettings))
-     {
-	 case 6:
-	     strcpy(movie.Mn,pName1->GetText());
-	     strcpy(movie.Timing,pTime1->GetText());
-	     movie.Price=atof(pPrice1->GetText());
-	     fil.write((char *)&movie,sizeof(movie));
-     fil.close();
-	     AdminHome();
-	     MDatabaseSettings.EnableClickHandler(currentitem);
-	 break;
-	 case 7:
-	     //
-	     AdminHome();
-	 break;
-	 default:
-	     MDatabaseSettings.EnableClickHandler(currentitem);
-	 break;
-     }
- }
- void Theatre_Settings()
- {
 
- }
+    switch(Navigate(mDatabase_Settings))
+    {
+	case 6:
+	    strcpy(movie.Mn,pName1->GetText());
+	    strcpy(movie.Timing,pTime1->GetText());
+	    movie.Price=atof(pPrice1->GetText());
+	    fil.open("database.dat",ios::binary|ios::in);
+	    while(!found && fil.read((char *)&temp,sizeof(temp)))
+	    {
+		if(strcmpi(movie.Mn,temp.Mn)==0)
+		    found=1;
+	    }
+	    fil.close();
+	    fil.open("database.dat",ios::binary|ios::app);
+	    if(!found)
+		fil.write((char *)&movie,sizeof(movie));
+	    else{
+		window(20,15,50,15);
+		gotoxy(1,1);
+		cout<<"Movie already exists. Press enter";
+		getch();
+		clrscr();
+		window(1,1,80,25);
+	    }
+	    fil.close();
+	    AdminHome();
+	    //menu[currentmenu].EnableClickHandler(currentitem);
+        break;
+        case 7:
+            
+            AdminHome();
+        break;
+        default:
+            mDatabase_Settings.EnableClickHandler(currentitem);
+	break;
+    }
+    
+}
+void Theatre_Settings()
+{
+
+}
 void chkadmin()
 {
     fstream fil;
@@ -1090,8 +1180,8 @@ int Seats_Occupied()
     int s = 0;
     for(int i = 0;i<Max_Seats;i++)
     {
-        if(seat[i]->Occupied==true)
-            s++;
+	if(seat[i]->Occupied==true)
+	    s++;
     }
     return s;
 }
@@ -1108,31 +1198,31 @@ void EnterSeats()
     mEnterSeats.AddItem(nos);
     mEnterSeats.AddItem(pNext);
     mEnterSeats.AddItem(pBack);
-    mEnterSeats.Draw(); 
+    mEnterSeats.Draw();
 
     switch(Navigate(mEnterSeats))
     {
-        case 2:
-        {
-            Seats_Needed = atoi(nos->GetText());
-            if(Seats_Needed<=(25-Seats_Occupied()) && Seats_Needed>0)//
-            {
-                seats(Seats_Needed);
-            }
+	case 2:
+	{
+	    Seats_Needed = atoi(nos->GetText());
+	    if(Seats_Needed<=(25-Seats_Occupied()) && Seats_Needed>0)//
+	    {
+		seats(Seats_Needed);
+	    }
 
-            else{
-                gotoxy(20,20);
-                cout<<"only "<<Seats_Occupied()<<" seats are available PRESS ENTER";
-                getch();
-                EnterSeats();
-            }
-        }
-        break;
-        default:
-        {
-            mEnterSeats.EnableClickHandler(currentitem);
-        }
-        break;
+	    else{
+		gotoxy(20,20);
+		cout<<"only "<<Seats_Occupied()<<" seats are available PRESS ENTER";
+		getch();
+		EnterSeats();
+	    }
+	}
+	break;
+	default:
+	{
+	    mEnterSeats.EnableClickHandler(currentitem);
+	}
+	break;
     }
 }
 void seats(int Seats_Needed)
@@ -1141,13 +1231,14 @@ void seats(int Seats_Needed)
     clrscr();
     _setcursortype(_NOCURSOR);
     bool manualmode = false;
+    Choice.Seats = Seats_Needed;
     cout<<"Do you want to select seats manually?(y/n)";
     if(tolower(getch())=='y')
     {
         manualmode = true;
     }
     clrscr();
-    TextBox *pNext = new TextBox(72,23,8,1,"NEXT",0,CYAN,2,welcome);
+    TextBox *pNext = new TextBox(72,23,8,1,"NEXT",0,CYAN,2,CustomerConfirm);
     TextBox *pBack = new TextBox(1,23,8,1,"BACK",0,CYAN,3,CustomerHome);
     window(1,1,80,25);
     Menu mseats(5,"Seats");
@@ -1180,7 +1271,7 @@ void seats(int Seats_Needed)
     if(manualmode)
         seat[i]->Draw(LIGHTGREEN);
     else{
-        for(j=i;j<i+Seats_Needed&&j<25;j++)
+	for(j=i;j<i+Seats_Needed&&j<25;j++)
         {
             seat[j]->Draw(LIGHTGREEN);    
         }
@@ -1193,7 +1284,7 @@ void seats(int Seats_Needed)
         switch(a)
         {
             case 0:
-            {
+	    {
                 a=getch();
                 switch(a)
                 {
@@ -1206,7 +1297,7 @@ void seats(int Seats_Needed)
                                 seat[j]->Draw();
                             }
                             seat[++i]->Highlight();
-                            seat[i]->Draw(LIGHTGREEN);
+			    seat[i]->Draw(LIGHTGREEN);
                             if(!manualmode){
                                 for(j=i;j<i+Seats_Needed&&j<25;j++)
                                 {
@@ -1219,7 +1310,7 @@ void seats(int Seats_Needed)
                     break;
                     case LEFT:
                     {
-                        if(i>0){
+			if(i>0){
                             for(j=0;j<25;j++)
                             {
                                 //seat[j]->Select=false;
@@ -1232,7 +1323,7 @@ void seats(int Seats_Needed)
                                 {
                                     seat[j]->Draw(LIGHTGREEN);
                                 }
-                            }
+			    }
                             seat[i]->Highlight();
                         }
                     }
@@ -1245,7 +1336,7 @@ void seats(int Seats_Needed)
                             {
                                 //seat[j]->Select=false;
                                 seat[j]->Draw();
-                            }
+			    }
                             i-=5;
                             seat[i]->Highlight();
                             seat[i]->Draw(LIGHTGREEN);
@@ -1258,7 +1349,7 @@ void seats(int Seats_Needed)
                             seat[i]->Highlight();
                         }
                     }
-                    break;
+		    break;
                     case DOWN:
                     {
                         if(i>=0&&i<20)
@@ -1271,7 +1362,7 @@ void seats(int Seats_Needed)
                             i+=5;
                             seat[i]->Highlight(); 
                             seat[i]->Draw(LIGHTGREEN);
-                            if(!manualmode){
+			    if(!manualmode){
                                 for(j=i;j<i+Seats_Needed&&j<25;j++)
                                 {
                                     seat[j]->Draw(LIGHTGREEN);
@@ -1284,7 +1375,7 @@ void seats(int Seats_Needed)
                 }
             }
             break;
-            case ENTER:
+	    case ENTER:
             {
                 if(!manualmode)
                 {
@@ -1297,7 +1388,7 @@ void seats(int Seats_Needed)
                         }
                     }
                     window(20,24,50,25);
-                    clrscr();
+		    clrscr();
                     gotoxy(1,1);
                     cprintf("Do you want to continue(y/n)");
                     if(tolower(getch())=='y')
@@ -1310,7 +1401,7 @@ void seats(int Seats_Needed)
                         }
                         window(20,24,50,25);
                         clrscr();
-                        window(1,1,80,25);
+			window(1,1,80,25);
                         l=1;
                         break;
                     }
@@ -1323,7 +1414,7 @@ void seats(int Seats_Needed)
                         }
                         EnterSeats();
                     }
-                }
+		}
                 else{           //MANUAL MODE
                     if(seats_selected!=Seats_Needed)
                     {
@@ -1336,7 +1427,7 @@ void seats(int Seats_Needed)
                     }
                     else{
                         window(20,24,50,25);
-                    clrscr();
+		    clrscr();
                     gotoxy(1,1);
                     cprintf("Do you want to continue(y/n)");
                     if(tolower(getch())=='y')
@@ -1349,7 +1440,7 @@ void seats(int Seats_Needed)
                                 seat[j]->Select=false;
                                 seat[j]->Draw();
                             }                           
-                        }
+			}
                         window(20,24,50,25);
                         clrscr();
                         window(1,1,80,25);
@@ -1362,7 +1453,7 @@ void seats(int Seats_Needed)
                         for(j=0;j<25;j++)
                         {
                             seat[j]->Select=false;
-                        }
+			}
                         EnterSeats();
                     }
                 }
@@ -1375,7 +1466,7 @@ void seats(int Seats_Needed)
                 {
                     seat[j]->Select=false;
                     seat[j]->Draw();
-                }
+		}
                 seat[i]->Highlight();
             }
             break;
@@ -1388,7 +1479,7 @@ void seats(int Seats_Needed)
                 exit(0);
             }
             break;
-        }
+	}
     }while(a!='x'&&l!=1);
     // for(j =0;j<25;j++)
     // {
@@ -1401,23 +1492,66 @@ void seats(int Seats_Needed)
         break;
     }
 }
+void CustomerConfirm()
+{
+    clrscr();
+    _setcursortype(_NOCURSOR);
+    //TextBox *cc = new TextBox(30,10,20,1,Choice.Mn,0,CYAN,1,CustomerConfirm);
+    TextBox *ccNext = new TextBox(72,23,8,1,"NEXT",0,CYAN,2,welcome);
+    TextBox *ccBack = new TextBox(1,23,8,1,"BACK",0,CYAN,3,EnterSeats);
+    Menu mCustomerConfirm(5,"Confirm Your Booking");
+    //mCustomerConfirm.AddItem(cc);
+    mCustomerConfirm.AddItem(ccNext);
+    mCustomerConfirm.AddItem(ccBack);
+    mCustomerConfirm.Draw();
+    textcolor(WHITE);
+    gotoxy(15,10);
+    cout<<"Movie Selected : "<<Choice.Mn;
+    gotoxy(15,11);
+    cout<<"No. Of Seats   :  "<<Choice.Seats;
+    switch(Navigate(mCustomerConfirm))
+    {
+	case 2: welcome();
+		break;
+	case 3: EnterSeats();
+		break;
+	default:
+	{
+	    mCustomerConfirm.EnableClickHandler(currentitem);
+	}
+	break;
+    }
+}
 void main()
 {
-     int p=0,q=0,r=0;
+     int p=0,q=0,r=0,i=1;
+     char a='A';
+
     while(p<25)
     {
         for(q = 0;q<5;q++)
             {
-                seat[p] = new Seat(20+(10*q),5+r,YELLOW,GREEN,p);
+                seat[p] = new Seat(20+(10*q),5+r,YELLOW,GREEN,p,a,i);
                 seat[p]->Occupied= false;
                 p++;
+                i++;
             }
         r+=4;
+        a++;
+        i=1;
     }
+    // for(p =0;p<25;p++)
+    // {
+    //     cout<<seat[p]->name<<" ";
+    //}
+    // getch();
     chkadmin();
     //EnterSeats();
     for(p =0;p<25;p++)
     {
         delete seat[p];
     }
+    clrscr();
+    cout<<"ended";
+    getch();
 }
