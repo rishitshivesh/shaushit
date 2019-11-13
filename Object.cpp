@@ -70,12 +70,20 @@ public:
     char Username[50];
     char Name[50], EMail[25];
     char Phone[10];
+	int myseats[25];
+	CUSTOMER();
     //CUSTOMER(char *user,char *pass);
     void inputdata(char *name, char *username,char *password, char *email, char *phone);
     int CheckPassword(char *password);
 
 
 };
+CUSTOMER::CUSTOMER()
+{
+	for(int i=0;i<25;i++)
+		myseats[i]=0;
+
+}
 int CUSTOMER::CheckPassword(char *password)
 {
     if(strcmp(Password,password)==0)
@@ -92,7 +100,7 @@ void CUSTOMER::inputdata(char *name, char *username,char *password, char *email,
     strcpy(EMail,email);
     strcpy(Phone,phone);
 }
-
+CUSTOMER current_customer;
 class ADMIN
 {
     char Password[50];
@@ -1335,6 +1343,10 @@ void seats(int Seats_Needed)
     Menu mseats(5,"Seats");
     mseats.AddItem(pNext);
     mseats.AddItem(pBack);
+	int d=20;
+	gotoxy(d,22);
+	for(d;d<=60;d++)
+		cprintf("%c",220);
     mseats.Draw();
     int i=0,j=0,k=0,a,l=0,seats_selected=0;
     
@@ -1489,6 +1501,7 @@ void seats(int Seats_Needed)
 			    seat[j]->Occupied=true;
 			    seat[j]->Select=false;
 			    seat[j]->Draw();
+				current_customer.myseats[j]=1;
 			}
 			window(20,24,50,25);
 			clrscr();
@@ -1509,12 +1522,18 @@ void seats(int Seats_Needed)
 		else{           //MANUAL MODE
 		    if(seats_selected!=Seats_Needed)
 		    {
-			if(!(seat[i]->Occupied))
-			{
-			    seat[i]->Select=true;
-			    seat[i]->Draw();
-			    seats_selected++;
-			}
+				if(!(seat[i]->Occupied)&&!(seat[i]->Select))
+				{
+					seat[i]->Select=true;
+					seat[i]->Draw();
+					seats_selected++;
+				}
+				else if(!(seat[i]->Occupied)&&(seat[i]->Select))
+				{
+					seat[i]->Select=false;
+					seats_selected--;
+					seat[i]->Draw();
+				}
 		    }
 		    else{
 			window(20,24,50,25);
@@ -1530,6 +1549,7 @@ void seats(int Seats_Needed)
 				seat[j]->Occupied=true;
 				seat[j]->Select=false;
 				seat[j]->Draw();
+				current_customer.myseats[j]=1;
 			    }
 			}
 			window(20,24,50,25);
@@ -1630,18 +1650,23 @@ void CustomerConfirm()
     gotoxy(15,14);
     cout<<"No. Of Seats   	:  "<<Choice.Seats;
     gotoxy(15,15);
-    cout<<"-------------------------------------------";
-    gotoxy(15,16);
-    cout<<"   		       Subtotal : "<<Subtotal;
+    cout<<"Seat(s) Selected	:  ";
+	for(int p=0;p<25;p++)
+		if(current_customer.myseats[p]==1)
+			cout<<seat[p]->name<<" ";
+	gotoxy(15,16);
+	cout<<"-------------------------------------------";
     gotoxy(15,17);
-    cout<<"   		       	    GST : 18.5%";
+    cout<<"   		       Subtotal : "<<Subtotal;
     gotoxy(15,18);
-    cout<<"   	       Convinience Fees : 25";
+    cout<<"   		       	    GST : 18.5%";
     gotoxy(15,19);
-    cout<<"   	         Service Charge : 2.5%";
+    cout<<"   	       Convinience Fees : 25";
     gotoxy(15,20);
-    cout<<"___________________________________________";
+    cout<<"   	         Service Charge : 2.5%";
     gotoxy(15,21);
+    cout<<"___________________________________________";
+    gotoxy(15,22);
     float FinalPrice=Subtotal*(1.21)+25;
     cout<<"	     		    Total Price : "<<FinalPrice;
     switch(Navigate(mCustomerConfirm))
@@ -1658,6 +1683,11 @@ void CustomerConfirm()
 	 fil<<"Time	       		: "<<Choice.Timing<<endl;
 	 fil<<"Price(Per Seat} 	: "<<Choice.Price<<endl;
 	 fil<<"No. Of Seats   		:  "<<Choice.Seats<<endl;
+	 fil<<"Seat(s) Selected     :  ";
+	 for(int p=0;p<25;p++)
+		if(current_customer.myseats[p]==1)
+			cout<<seat[p]->name<<" ";
+	 fil<<endl;
 	 fil<<"-------------------------------------------"<<endl;
 	 fil<<"   		       Subtotal : "<<Subtotal<<endl;
 	 fil<<"   		       	    GST : 18.5%"<<endl;
@@ -1678,9 +1708,13 @@ void CustomerConfirm()
 	 }
 	 CustomerIndex();
 	 break;
-	 //case 3:
-	 //CustomerHome();
-	 //break;
+	 case 3:
+		for(int i=0;i<25;i++)
+			if(current_customer.myseats[i]==1)
+				seat[i]->Occupied=false;
+		CustomerIndex();
+		
+	 break;
 	default:
 	{
 	    mCustomerConfirm.EnableClickHandler(currentitem);
@@ -1712,12 +1746,12 @@ void CancelTicket()
 	{
 		fstream fil;
 		fil.open("Info.dat",ios::out|ios::in|ios::binary);
-		while((fil.read((char*)&Movie,sizeof(Movie)))&&!found)
+		while(!found&&(fil.read((char*)&Movie,sizeof(Movie))))
 		{
-			if((strcmp(Movie.ID,cid->GetText())==0)&&(Movie.Status==true))
+			if((strcmpi(Movie.ID,cid->GetText())==0)&&(Movie.Status==true))
 			{
 				Movie.Status=false;
-				fil.seekg(-1*sizeof(Movie),ios::cur);
+				fil.seekp(fil.tellg()-sizeof(Movie),ios::beg);
 				fil.write((char*)&Movie,sizeof(Movie));
 				found++;
 			}
@@ -1819,9 +1853,9 @@ void main()
     {
 	for(q = 0;q<5;q++)
             {
-                seat[p] = new Seat(20+(10*q),5+r,YELLOW,GREEN,p,a,i);
+		seat[p] = new Seat(20+(10*q),4+r,YELLOW,GREEN,p,a,i);
                 seat[p]->Occupied= false;
-		p++;
+				p++;
                 i++;
             }
         r+=4;
