@@ -696,17 +696,21 @@ void AdminSignUp()
     clrscr();
     _setcursortype(_NOCURSOR);
     textcolor(RED);
-    window(6,21,80,25);
+    //window(6,21,80,25);
+    gotoxy(6,21);
     for(int i=0;i<70;i++)
     {
 	    cprintf("%c",219);
 	    delay(50);
     }
-    window(6,23,55,25);
+    //window(6,23,55,25);
+    gotoxy(6,23);
     cprintf("Loaded! Press any key to proceed...");
     getch();
     //flushall();
-    window(1,1,80,25);
+    clrscr();
+    //window(1,1,80,25);
+    textcolor(WHITE);
     currentmenu = 1;
     gotoxy(6,6);
     cout<<"Name: ";
@@ -718,11 +722,11 @@ void AdminSignUp()
     cout<<"Phone Number: ";
     gotoxy(6,18);
     cout<<"Email Id: ";
-    TextBox *pName = new TextBox(20,5,50,1,"NAME",0,YELLOW,0,AdminSignUp);
-    TextBox *pUsername = new TextBox(20,8,50,1,"Username",0,GREEN,1,AdminSignUp);
-    TextBox *pPassword = new TextBox(20,11,50,1,"Password",0,YELLOW,2,AdminSignUp);
-    TextBox *pPhone = new TextBox(20,14,50,1,"PHONE NUMBER",0,GREEN,3,AdminSignUp);
-    TextBox *pemail = new TextBox(20,18,50,1,"EMAIL ID",0,YELLOW,4,AdminSignUp);
+    TextBox *pName = new TextBox(20,5,50,1,"",0,YELLOW,0,AdminSignUp);
+    TextBox *pUsername = new TextBox(20,8,50,1,"",0,GREEN,1,AdminSignUp);
+    TextBox *pPassword = new TextBox(20,11,50,1,"",0,YELLOW,2,AdminSignUp);
+    TextBox *pPhone = new TextBox(20,14,50,1,"",0,GREEN,3,AdminSignUp);
+    TextBox *pemail = new TextBox(20,17,50,1,"",0,YELLOW,4,AdminSignUp);
     TextBox *pNext = new TextBox(30,21,20,1,"NEXT",0,CYAN,5,welcome);
     pName->SetReadOnly(false);
     pUsername->SetReadOnly(false);
