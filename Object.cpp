@@ -1702,9 +1702,9 @@ void CustomerConfirm()
     gotoxy(15,13);
     cout<<"Price(Per Seat} 	: "<<Choice.Price;
     gotoxy(15,14);
-    cout<<"No. Of Seats   	:  "<<Choice.Seats;
+    cout<<"No. Of Seats   	: "<<Choice.Seats;
     gotoxy(15,15);
-    cout<<"Seat(s) Selected	:  ";
+    cout<<"Seat(s) Selected	: ";
 	for(int p=0;p<25;p++)
 		if(current_customer.myseats[p]==1)
 			cout<<seat[p]->name<<" ";
@@ -1736,11 +1736,13 @@ void CustomerConfirm()
 	 fil<<"Movie Selected  	: "<<Choice.Mn<<endl;
 	 fil<<"Time	       		: "<<Choice.Timing<<endl;
 	 fil<<"Price(Per Seat} 	: "<<Choice.Price<<endl;
-	 fil<<"No. Of Seats   		:  "<<Choice.Seats<<endl;
-	 fil<<"Seat(s) Selected     :  ";
+	 fil<<"No. Of Seats   	        :  "<<Choice.Seats<<endl;
+	 fil<<"Seat(s) Selected        : ";
 	 for(int p=0;p<25;p++)
+	 {
 		if(current_customer.myseats[p]==1)
-			cout<<seat[p]->name<<" ";
+			fil<<seat[p]->name<<" ";
+	 }
 	 fil<<endl;
 	 fil<<"-------------------------------------------"<<endl;
 	 fil<<"   		       Subtotal : "<<Subtotal<<endl;
