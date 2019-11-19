@@ -35,7 +35,7 @@ void CustomerConfirm();
 void AdminLogin();
 void AdminSignUp();
 void AdminHome();
-void Theatre_Settings();
+void AllBookings();
 void Database_Settings();
 void Movie_Settings();
 void about();
@@ -76,7 +76,7 @@ public:
 	int myseats[25];
 	CUSTOMER();
     //CUSTOMER(char *user,char *pass);
-    void inputdata(char *name, char *username,char *password, char *email, char *phone);
+	void inputdata(char *name, char *username,char *password, char *email, char *phone);
     int CheckPassword(char *password);
     void ChangePassword(char *password);
 
@@ -102,7 +102,7 @@ void CUSTOMER::ChangePassword(char *password)
 }
 void CUSTOMER::inputdata(char *name, char *username,char *password, char *email, char *phone)
 {
-    strcpy(Name,name);
+	strcpy(Name,name);
     strcpy(Username,username);
     strcpy(Password,password);
     strcpy(EMail,email);
@@ -115,7 +115,7 @@ class ADMIN
 public:
     char Username[50];
     char Name[50], EMail[50];
-    char Phone[10];
+	char Phone[10];
     void inputdata(char *name, char *username,char *password, char *email, char *phone);
     int CheckPassword(char *password);
 
@@ -141,7 +141,7 @@ void ADMIN::inputdata(char *name, char *username,char *password, char *email, ch
 int AdminCheckID(char *username,char *password=" ")
 {
     ADMIN Admin;
-    fstream fil;
+	fstream fil;
     int exists=0;
     fil.open("admintext.dat",ios::binary|ios::in);
     while(fil.read((char *)&Admin,sizeof(Admin)))
@@ -193,7 +193,7 @@ class TextBox
 
     public:
     
-    int ID;
+	int ID;
     TextBox(int x, int y, int width, int height, char caption[],int Align,int color, int Id,void (*callback)(void));
     void Draw();
     void Highlight(char a);
@@ -232,7 +232,7 @@ void TextBox::Draw()
     gotoxy(X,Y);
     char w[100] = " ";
     char h[100] = " ";
-    h[0] = char(179);
+	h[0] = char(179);
     for(int i = 0;i<Width;i++)
     {
         w[i]=char(196);
@@ -310,7 +310,7 @@ void TextBox::Highlight(char a)
 	    ch=getch();
 	    // if(ch==0)
 	    // { ch=getch();
-	    switch (ch)
+		switch (ch)
 	    {
 		case 8: //backspace
 		    if(len>0)
@@ -323,7 +323,7 @@ void TextBox::Highlight(char a)
 		break;
 	    }
 	    //}//if(ch==0) ended
-	    if(isprint(ch))
+		if(isprint(ch))
 	    {
 		Caption[curpos]=ch;
 		HiddenText[curpos]='*';
@@ -349,7 +349,7 @@ void TextBox::Highlight(char a)
     }
     _setcursortype(_NOCURSOR);
     char w[70] = " ";
-    for(int i = 0;i<Width;i++)
+	for(int i = 0;i<Width;i++)
         w[i] = a;
     textcolor(RED);
     gotoxy(X,Y);
@@ -427,7 +427,7 @@ void Seat::Seat(int x, int y,int color,int scolor, int Id,char a,int i)
 {
     X=x;
     Y=y;
-    ID=Id;
+	ID=Id;
     Color = color;
     SColor = scolor;
     I=i;
@@ -453,7 +453,7 @@ void Seat::Draw(int color)
 	textcolor(DARKGRAY);
         cprintf("%c",177);
     }
-    else{
+	else{
         textcolor(color);
         cprintf("%c",177);
     }
@@ -479,7 +479,7 @@ public:
     int left_allign;
     int centre_allign;
     int right_allign;
-    TextBox *textbox[25];
+	TextBox *textbox[25];
     TextBox *menubar;
     char Caption[80];
     Menu(int p,char a[80])
@@ -492,7 +492,7 @@ public:
 	menubar = NULL;
 	for(int i=0;i<25;i++)
         {
-	    textbox[i]= NULL;
+		textbox[i]= NULL;
         }
     }
     void Drawbox(int l,int b,int x ,int y,char text[]);
@@ -518,7 +518,7 @@ void Menu::Drawbox(int l,int b,int x ,int y,char text[])
     textcolor(YELLOW);
     int n = y;
     int a = l-1;
-    gotoxy(x,y);
+	gotoxy(x,y);
     char w[80] = " ";
     char h[25] = " ";
     h[0] = char(179)    ;
@@ -531,7 +531,7 @@ void Menu::Drawbox(int l,int b,int x ,int y,char text[])
     cprintf(w);
     n++;
     for(int j = 0 ;j<b;j++)
-    {
+	{
         gotoxy(x,n);
         cprintf(h);
 	n++;
@@ -557,7 +557,7 @@ void Menu::Highlight(int l, int b,int x , int y , char a)
     textcolor(RED);
     gotoxy(m,n+b+1);
     cprintf(w);
-    textcolor(WHITE);
+	textcolor(WHITE);
 }
 
 void Menu::Draw()
@@ -583,7 +583,7 @@ void Menu::Scroll(int current_item,int dir)
 	{
         if(current_item<itemnumber)
         {
-	     currentitem++;
+		 currentitem++;
              textbox[(current_item+1)]->Highlight(char(205));
         }
 	else if(current_item ==itemnumber)
@@ -648,7 +648,7 @@ int Navigate(Menu menu)
 	    case 13:{
                 return menu.ReturnID(currentitem);
             }
-	    break;
+		break;
             case 'e':
             exit(0);
 	    break;
@@ -661,7 +661,7 @@ int Navigate(Menu menu)
 void welcome()
 {
     clrscr();
-    _setcursortype(_NOCURSOR);
+	_setcursortype(_NOCURSOR);
     //flushall();
     //currentmenu=0;
     TextBox *pAdmin = new TextBox(30,5,20,1,"ADMIN",0,CYAN,0,AdminLogin);
@@ -674,7 +674,7 @@ void welcome()
     {
         case 0:
         {
-	    if(Admin_LoggedIn)
+		if(Admin_LoggedIn)
                 AdminHome();
                 
 	    else {AdminLogin();}
@@ -700,7 +700,7 @@ void AdminSignUp()
     gotoxy(6,21);
     for(int i=0;i<70;i++)
     {
-	    cprintf("%c",219);
+		cprintf("%c",219);
 	    delay(50);
     }
     //window(6,23,55,25);
@@ -713,7 +713,7 @@ void AdminSignUp()
     textcolor(WHITE);
     currentmenu = 1;
     gotoxy(6,6);
-    cout<<"Name: ";
+	cout<<"Name: ";
     gotoxy(6,9);
     cout<<"Username: ";
     gotoxy(6,12);
@@ -726,7 +726,7 @@ void AdminSignUp()
     TextBox *pUsername = new TextBox(20,8,50,1,"",0,GREEN,1,AdminSignUp);
     TextBox *pPassword = new TextBox(20,11,50,1,"",0,YELLOW,2,AdminSignUp);
     TextBox *pPhone = new TextBox(20,14,50,1,"",0,GREEN,3,AdminSignUp);
-    TextBox *pemail = new TextBox(20,17,50,1,"",0,YELLOW,4,AdminSignUp);
+	TextBox *pemail = new TextBox(20,17,50,1,"",0,YELLOW,4,AdminSignUp);
     TextBox *pNext = new TextBox(30,21,20,1,"NEXT",0,CYAN,5,welcome);
     pName->SetReadOnly(false);
     pUsername->SetReadOnly(false);
@@ -739,7 +739,7 @@ void AdminSignUp()
     pAdminSignUp.AddItem(pUsername);
     pAdminSignUp.AddItem(pPassword);
     pAdminSignUp.AddItem(pPhone);
-    pAdminSignUp.AddItem(pemail);
+	pAdminSignUp.AddItem(pemail);
     pAdminSignUp.AddItem(pNext);
     pAdminSignUp.Draw();
     pPassword->HideText(true);
@@ -752,7 +752,7 @@ void AdminSignUp()
     fil.write((char*)&Admin,sizeof(Admin));
     fil.close();
     pAdminSignUp.EnableClickHandler(currentitem);
-    }
+	}
 }
 void CustomerSignUp()
 {
@@ -765,7 +765,7 @@ void CustomerSignUp()
     gotoxy(6,9);
     cout<<"Username: ";
     gotoxy(6,12);
-    cout<<"Password: ";
+	cout<<"Password: ";
     gotoxy(6,15);
     cout<<"Phone Number: ";
     gotoxy(6,18);
@@ -778,7 +778,7 @@ void CustomerSignUp()
     TextBox *pNext = new TextBox(40,22,20,1,"NEXT",0,CYAN,5,Customerlogin);
     TextBox *pBack = new TextBox(10,22,20,1,"BACK",0,CYAN,6,Customerlogin);
     pName->SetReadOnly(false);
-    pUsername->SetReadOnly(false);
+	pUsername->SetReadOnly(false);
     pPhone->SetReadOnly(false);
     pemail->SetReadOnly(false);
     pPassword->SetReadOnly(false);
@@ -791,7 +791,7 @@ void CustomerSignUp()
     mCustomerSignUp.AddItem(pemail);
     mCustomerSignUp.AddItem(pNext);
     mCustomerSignUp.AddItem(pBack);
-    mCustomerSignUp.Draw();
+	mCustomerSignUp.Draw();
     pPassword->HideText(true);
 
     switch(Navigate(mCustomerSignUp))
@@ -804,7 +804,7 @@ void CustomerSignUp()
 	    CUSTOMER Customer;
 
 	    Customer.inputdata(pName->GetText(),pUsername->GetText(),pPassword->GetText(),pemail->GetText(),pPhone->GetText());
-	    if(CheckFile(pUsername->GetText())==2)
+		if(CheckFile(pUsername->GetText())==2)
 	    {
 		gotoxy(15,20);
 		cprintf("User Exists. Press Enter to go to LoginPage!");
@@ -830,7 +830,7 @@ void CustomerSignUp()
 void Customerlogin()
 {
     clrscr();
-    _setcursortype(_NOCURSOR);
+	_setcursortype(_NOCURSOR);
     gotoxy(18,6);
     cout<<"Username: ";
     gotoxy(18,9);
@@ -843,7 +843,7 @@ void Customerlogin()
     pUsername->SetReadOnly(false);
     pPassword->SetReadOnly(false);
     Menu mCustomerlogin(2,"Customer Login");
-    mCustomerlogin.AddItem(pUsername);
+	mCustomerlogin.AddItem(pUsername);
     mCustomerlogin.AddItem(pPassword);
     mCustomerlogin.AddItem(pCustomerSignUp);
     mCustomerlogin.AddItem(pNext);
@@ -882,7 +882,7 @@ void AdminLogin()
     gotoxy(18,6);
     cout<<"Username: ";
     gotoxy(18,9);
-    cout<<"Password: ";
+	cout<<"Password: ";
     TextBox *pUsername = new TextBox(30,5,20,1,"",0,YELLOW,0,AdminLogin);
     TextBox *pPassword = new TextBox(30,8,20,1,"",0,GREEN,1,AdminLogin);
     TextBox *pNext = new TextBox(50,12,20,1,"NEXT",0,CYAN,2,AdminHome);
@@ -895,7 +895,7 @@ void AdminLogin()
     mAdminLogin.AddItem(pNext);
     mAdminLogin.AddItem(pBack);
     mAdminLogin.Draw();
-    pPassword->HideText(true);
+	pPassword->HideText(true);
 
     switch(Navigate(mAdminLogin))
     {
@@ -908,7 +908,7 @@ void AdminLogin()
 	    {
 		Admin_LoggedIn=true;
 		AdminHome();
-	    }
+		}
 	    else{
 		gotoxy(20,11);
 		cprintf("Incorrect Password,Press Enter to Retry");
@@ -928,26 +928,26 @@ void AdminHome()
 {
     clrscr();
     _setcursortype(_NOCURSOR);
-    TextBox *M_Settings = new TextBox(25,5,30,1,"Movie Settings",0,YELLOW,0,Movie_Settings);
-    TextBox *T_Settings = new TextBox(25,8,30,1,"Theatre Settings",0,YELLOW,1,welcome);
-    TextBox *D_Settings = new TextBox(25,11,30,1,"Database Settings",0,YELLOW,2,Database_Settings);
-    TextBox *pAbout = new TextBox(25,14,30,1,"ABOUT",0,CYAN,3,about);
-    TextBox *pBack = new TextBox(1,23,20,1,"BACK",0,CYAN,4,AdminLogin);
-    Menu mAdminHome(3,"Hello Admin");
-    mAdminHome.AddItem(M_Settings);
-    mAdminHome.AddItem(T_Settings);
-    mAdminHome.AddItem(D_Settings);
-    mAdminHome.AddItem(pAbout);
-    mAdminHome.AddItem(pBack);
-    mAdminHome.Draw();
-    switch(Navigate(mAdminHome))
-    {
+	TextBox *M_Settings = new TextBox(25,5,30,1,"Movie Settings",0,YELLOW,0,Movie_Settings);
+	TextBox *T_Settings = new TextBox(25,8,30,1,"View All Bookings",0,YELLOW,1,AllBookings);
+	TextBox *D_Settings = new TextBox(25,11,30,1,"Database Settings",0,YELLOW,2,Database_Settings);
+	TextBox *pAbout = new TextBox(25,14,30,1,"ABOUT",0,CYAN,3,about);
+	TextBox *pBack = new TextBox(1,23,20,1,"BACK",0,CYAN,4,AdminLogin);
+	Menu mAdminHome(3,"Hello Admin");
+	mAdminHome.AddItem(M_Settings);
+	mAdminHome.AddItem(T_Settings);
+	mAdminHome.AddItem(D_Settings);
+	mAdminHome.AddItem(pAbout);
+	mAdminHome.AddItem(pBack);
+	mAdminHome.Draw();
+	switch(Navigate(mAdminHome))
+	{
 	case 4:
 
 	    window(24,24,50,25);
 	    clrscr();
 	    gotoxy(1,1);
-	    cprintf("Do you want to LOG OUT(y/n)");
+		cprintf("Do you want to LOG OUT(y/n)");
 		if(tolower(getch())=='y')
 		{
 		    window(20,24,50,25);
@@ -964,30 +964,30 @@ void AdminHome()
 
 	break;
 	default:
-	    mAdminHome.EnableClickHandler(currentitem);
+		mAdminHome.EnableClickHandler(currentitem);
 	break;
-    }
+	}
 }
 
 void CustomerIndex()
 {
-    clrscr();
-    _setcursortype(_NOCURSOR);
-    TextBox *NewT = new TextBox(25,6,30,1,"Book New Ticket",0,YELLOW,0,CustomerHome);
-    TextBox *CancelT = new TextBox(25,9,30,1,"Cancel Ticket",0,YELLOW,1,CancelTicket);
-    TextBox *CBStatus = new TextBox(25,12,30,1,"Change Password",0,YELLOW,2,ChangePassword);
-    TextBox *VBHistory = new TextBox(25,15,30,1,"View Booking History",0,YELLOW,3,ViewBookingHistory);
-    TextBox *ciBack = new TextBox(1,23,20,1,"Sign Out",0,CYAN,4,Customerlogin);
+	clrscr();
+	_setcursortype(_NOCURSOR);
+	TextBox *NewT = new TextBox(25,6,30,1,"Book New Ticket",0,YELLOW,0,CustomerHome);
+	TextBox *CancelT = new TextBox(25,9,30,1,"Cancel Ticket",0,YELLOW,1,CancelTicket);
+	TextBox *CBStatus = new TextBox(25,12,30,1,"Change Password",0,YELLOW,2,ChangePassword);
+	TextBox *VBHistory = new TextBox(25,15,30,1,"View Booking History",0,YELLOW,3,ViewBookingHistory);
+	TextBox *ciBack = new TextBox(1,23,20,1,"Sign Out",0,CYAN,4,Customerlogin);
 
-    Menu mCustomerIndex(4,"Customer Home");
-    mCustomerIndex.AddItem(NewT);
-    mCustomerIndex.AddItem(CancelT);
-    mCustomerIndex.AddItem(CBStatus);
-    mCustomerIndex.AddItem(VBHistory);
-    mCustomerIndex.AddItem(ciBack);
-    mCustomerIndex.Draw();
-    switch(Navigate(mCustomerIndex))
-    {
+	Menu mCustomerIndex(4,"Customer Home");
+	mCustomerIndex.AddItem(NewT);
+	mCustomerIndex.AddItem(CancelT);
+	mCustomerIndex.AddItem(CBStatus);
+	mCustomerIndex.AddItem(VBHistory);
+	mCustomerIndex.AddItem(ciBack);
+	mCustomerIndex.Draw();
+	switch(Navigate(mCustomerIndex))
+	{
 	case 4:
 
 	    window(24,24,50,25);
@@ -1016,33 +1016,33 @@ void CustomerIndex()
 }
 void CustomerHome()
 {
-    clrscr();
-    window(1,1,80,25);
-    //clrscr();
-    _setcursortype(_NOCURSOR);
-    MOVIE temp1,temp2;
-    char n1[80],n2[80];
-    fstream fil1,fil2;
-    fil1.open("movie1.dat",ios::binary|ios::in);
-    fil1.read((char *)&temp1,sizeof(temp1));
-    strcpy(n1,temp1.Mn);
+	clrscr();
+	window(1,1,80,25);
+	//clrscr();
+	_setcursortype(_NOCURSOR);
+	MOVIE temp1,temp2;
+	char n1[80],n2[80];
+	fstream fil1,fil2;
+	fil1.open("movie1.dat",ios::binary|ios::in);
+	fil1.read((char *)&temp1,sizeof(temp1));
+	strcpy(n1,temp1.Mn);
 //    m1->Clear();
 //    m1->SetText(temp.Mn);
-    //fil1.close();
-    fil2.open("movie2.dat",ios::binary|ios::in);
-    fil2.read((char *)&temp2,sizeof(temp2));
-    strcpy(n2,temp2.Mn);
+	//fil1.close();
+	fil2.open("movie2.dat",ios::binary|ios::in);
+	fil2.read((char *)&temp2,sizeof(temp2));
+	strcpy(n2,temp2.Mn);
 //    m2->Clear();
 //    m2->SetText(temp.Mn);
-    fil2.close();
-    TextBox *m1 = new TextBox(15,10,20,1,n1,0,5,0,EnterSeats);
-    TextBox *m2 = new TextBox(40,10,20,1,n2,0,5,1,EnterSeats);
-    TextBox *pBack = new TextBox(1,23,8,1,"BACK",0,CYAN,2,CustomerIndex);
-    Menu mCustomerHome(4,"Now Playing");
-    mCustomerHome.AddItem(m1);
-    mCustomerHome.AddItem(m2);
-    mCustomerHome.AddItem(pBack);
-    mCustomerHome.Draw();
+	fil2.close();
+	TextBox *m1 = new TextBox(15,10,20,1,n1,0,5,0,EnterSeats);
+	TextBox *m2 = new TextBox(40,10,20,1,n2,0,5,1,EnterSeats);
+	TextBox *pBack = new TextBox(1,23,8,1,"BACK",0,CYAN,2,CustomerIndex);
+	Menu mCustomerHome(5,"Now Playing");
+	mCustomerHome.AddItem(m2);
+	mCustomerHome.AddItem(m1);
+	mCustomerHome.AddItem(pBack);
+	mCustomerHome.Draw();
     switch(Navigate(mCustomerHome))
     {
 	case 0: //fstream fil3;
@@ -1307,10 +1307,75 @@ void Database_Settings()
     }
 
 }
-void Theatre_Settings()
+void AllBookings()
 {
+    clrscr();
+    _setcursortype(_NOCURSOR);
+    TextBox *abBack = new TextBox(1,23,8,1,"BACK",0,CYAN,0,AdminHome);
+    Menu mAllBookings(5,"Booking History");
+	mAllBookings.AddItem(abBack);
+    mAllBookings.Draw();
+    int found=0;
+    MOVIE Movie;
+    fstream fil;
+	fil.open("Info.dat",ios::in|ios::binary);
+    int i=6;
+	while((fil.read((char*)&Movie,sizeof(Movie))))
+	{
+		gotoxy(1,4);
+		cout<<" S.No."<<setw(16)<<"Booking ID"<<setw(19)<<"Movie Name"<<setw(11)<<"Time"<<setw(10)<<"Price"<<setw(11)<<"Status";
+		for(int j=0;j<78;j++)
+		{
+			gotoxy(j+2,5);
+			cprintf("%c",205);
+		}
+		//for(int i=5;i<=24;i++)
+		//{
+			char status[10];
+			if(Movie.Status==true)
+			strcpy(status,"Confirm");
+			else if(Movie.Status==false)
+			strcpy(status,"Cancelled");
+			gotoxy(2,i);
+			cout<<setw(3)<<found+1<<char(186)<<setw(19)<<Movie.ID<<char(186)<<setw(20)<<Movie.Mn<<char(186)<<setw(8)<<Movie.Timing<<char(186)<<setw(9)<<Movie.CustFinalPrice<<char(186)<<setw(12)<<status;
+			found++;
+			i++;
+		//	}
+		}
 
+		// else if((strcmp(Movie.ID,cbs->GetText())==0)&&(Movie.Status==false))
+		// {
+		// 	clrscr();
+		// 	cout<<"Your Ticket Has Been Cancelled...";
+		// 	getch();
+		// 	found++;
+		// }
+		//}
+		if(found==0)
+		{
+//			clrscr();
+			gotoxy(5,5);
+			cout<<"No Booking Found!";
+			getch();
+		}
+		else
+		{
+		}
+
+//	    CustomerIndex();
+
+		//mChangePassword.EnableClickHandler(currentitem);
+    
+    switch(Navigate(mAllBookings))
+    {
+        case 0 : AdminHome();
+                 break;
+	}
+
+
+ //   }
 }
+
 void chkadmin()
 {
     fstream fil;
@@ -1394,7 +1459,7 @@ void seats(int Seats_Needed)
     TextBox *pNext = new TextBox(72,23,8,1,"NEXT",0,CYAN,2,CustomerConfirm);
     TextBox *pBack = new TextBox(1,23,8,1,"BACK",0,CYAN,3,CustomerHome);
     window(1,1,80,25);
-    Menu mseats(5,"Seats");
+    Menu mseats(6,"Seats");
     mseats.AddItem(pNext);
     mseats.AddItem(pBack);
 	int d=20;
@@ -1652,9 +1717,14 @@ void seats(int Seats_Needed)
     // }
     switch(Navigate(mseats))
     {
-	default:
-	    mseats.EnableClickHandler(currentitem);
-	break;
+		case 1 : 
+			for(i=0;i<=25;i++)
+				current_customer.myseats[i]==0;
+			mseats.EnableClickHandler(currentitem);
+			break;
+		default: 
+		mseats.EnableClickHandler(currentitem);
+		break;
     }
 }
 void CustomerConfirm()
@@ -1664,7 +1734,7 @@ void CustomerConfirm()
     //TextBox *cc = new TextBox(30,10,20,1,Choice.Mn,0,CYAN,1,CustomerConfirm);
     TextBox *ccNext = new TextBox(72,23,8,1,"NEXT",0,CYAN,2,welcome);
     TextBox *ccBack = new TextBox(1,23,8,1,"BACK",0,CYAN,3,EnterSeats);
-    Menu mCustomerConfirm(6,"Confirm Your Booking");
+    Menu mCustomerConfirm(7,"Confirm Your Booking");
     //mCustomerConfirm.AddItem(cc);
     mCustomerConfirm.AddItem(ccNext);
     mCustomerConfirm.AddItem(ccBack);
@@ -1672,7 +1742,7 @@ void CustomerConfirm()
     time_t t=time(NULL);
     char *time=ctime(&t),temp[50],name[50];
     strcpy(temp,time);
-    int j;
+    int j,p=0;
     for(int i=0;i<=strlen(temp);i++)
     {
 	if((isalpha(temp[i])==0)&&(isspace(temp[i])==0)&&(ispunct(temp[i])==0))
@@ -1705,7 +1775,7 @@ void CustomerConfirm()
     cout<<"No. Of Seats   	: "<<Choice.Seats;
     gotoxy(15,15);
     cout<<"Seat(s) Selected	: ";
-	for(int p=0;p<25;p++)
+	for(p=0;p<25;p++)
 		if(current_customer.myseats[p]==1)
 			cout<<seat[p]->name<<" ";
 	gotoxy(15,16);
@@ -1738,7 +1808,7 @@ void CustomerConfirm()
 	 fil<<"Price(Per Seat} 	: "<<Choice.Price<<endl;
 	 fil<<"No. Of Seats   	        :  "<<Choice.Seats<<endl;
 	 fil<<"Seat(s) Selected        : ";
-	 for(int p=0;p<25;p++)
+	 for(p=0;p<25;p++)
 	 {
 		if(current_customer.myseats[p]==1)
 			fil<<seat[p]->name<<" ";
@@ -1769,8 +1839,12 @@ void CustomerConfirm()
 	 case 3:
 		for(int i=0;i<25;i++)
 			if(current_customer.myseats[i]==1)
-				seat[i]->Occupied=false;
+			{
+                seat[i]->Occupied=false;
+                current_customer.myseats[i]=0;
+            }
 		CustomerIndex();
+
 
 	 break;
 	default:
@@ -1791,7 +1865,7 @@ void CancelTicket()
     TextBox *cidNext = new TextBox(72,23,8,1,"NEXT",0,CYAN,2,CustomerHome);
     TextBox *cidBack = new TextBox(1,23,8,1,"BACK",0,CYAN,3,CustomerHome);
     cid->SetReadOnly(false);
-    Menu mCancelTicket(7,"Cancel Ticket");
+    Menu mCancelTicket(5,"Cancel Ticket");
     mCancelTicket.AddItem(cid);
     mCancelTicket.AddItem(cidNext);
     mCancelTicket.AddItem(cidBack);
@@ -1804,7 +1878,7 @@ void CancelTicket()
 	{
 		fstream fil;
 		fil.open("Info.dat",ios::out|ios::in|ios::binary);
-		while(!found&&(fil.read((char*)&Movie,sizeof(Movie))))
+		while(!found && fil.read((char*)&Movie,sizeof(Movie)))
 		{
 			if((strcmpi(Movie.ID,cid->GetText())==0)&&(Movie.Status==true))
 			{
@@ -1857,7 +1931,7 @@ void ChangePassword()
     cpop->HideText(true);
     cpnp->SetReadOnly(false);
     cpnp->HideText(true);
-    Menu mChangePassword(8,"Change Password");
+    Menu mChangePassword(5,"Change Password");
     //mChangePassword.AddItem(cpu);
     mChangePassword.AddItem(cpop);
     mChangePassword.AddItem(cpnp);
@@ -1865,48 +1939,47 @@ void ChangePassword()
     mChangePassword.AddItem(cbsBack);
     mChangePassword.Draw();
     int found=0;
-    MOVIE Movie;
     switch(Navigate(mChangePassword))
     {
-	case 2:
-	{
-		if(current_customer.CheckPassword(cpop->GetText())==1)
-        {
-            CUSTOMER temp;
-            fstream fil;
-            fil.open("Customertext.dat",ios::in|ios::out|ios::binary);
-            while((!found)&&fil.read((char*)&temp,sizeof(temp)))
+    	case 2:
+    	{
+    		if(current_customer.CheckPassword(cpop->GetText())==1)
             {
-                if(strcmp(temp.Username,current_customer.Username)==0)
+                CUSTOMER temp;
+                fstream fil;
+                fil.open("Customertext.dat",ios::in|ios::out|ios::binary);
+                while((!found)&&fil.read((char*)&temp,sizeof(temp)))
                 {
-                    found++;
+                    if(strcmp(temp.Username,current_customer.Username)==0)
+                    {
+                        found++;
+                    }
                 }
+                current_customer.ChangePassword(cpnp->GetText());
+                fil.seekp(fil.tellg()-sizeof(temp),ios::beg);
+                fil.write((char*)&current_customer,sizeof(current_customer));
+    	        fil.close();
+    	        gotoxy(20,22);
+    	        textcolor(GREEN);
+    	        cprintf("Password Changed Successfully!");
+    	        getch();
+    	    }
+    	   else if(current_customer.CheckPassword(cpop->GetText())==0)
+    	    {
+    	        gotoxy(20,22);
+    	        textcolor(RED);
+    	        cprintf("Incorrect Password");
+    	        getch();
             }
-            current_customer.ChangePassword(cpnp->GetText());
-            fil.seekp(fil.tellg()-sizeof(temp),ios::beg);
-            fil.write((char*)&current_customer,sizeof(current_customer));
-	        fil.close();
-	    gotoxy(20,22);
-	    textcolor(GREEN);
-	    cprintf("Password Changed Successfully!");
-	    getch();
-	}
-	else if(current_customer.CheckPassword(cpop->GetText())==0)
-	{
-	    gotoxy(20,22);
-	    textcolor(RED);
-	    cprintf("Incorrect Password");
-	    getch();
-        }
-        CustomerIndex();
-	}
-	break;
-	default:
-	{
-	    CustomerIndex();
-	    //mChangePassword.EnableClickHandler(currentitem);
-	}
-	break;
+            CustomerIndex();
+    	}
+	    break;
+	    default:
+	    {
+	        CustomerIndex();
+	       //mChangePassword.EnableClickHandler(currentitem);
+	    }
+	    break;
     }
 }
 
@@ -1915,7 +1988,7 @@ void ViewBookingHistory()
     clrscr();
     _setcursortype(_NOCURSOR);
     TextBox *vbhBack = new TextBox(1,23,8,1,"BACK",0,CYAN,0,CustomerIndex);
-    Menu mViewBookingHistory(9,"Booking History");
+    Menu mViewBookingHistory(5,"Booking History");
     mViewBookingHistory.AddItem(vbhBack);
     mViewBookingHistory.Draw();
     int found=0;
