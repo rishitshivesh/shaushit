@@ -56,16 +56,12 @@ class MOVIE
     public:
     char Mn[80],Timing[5], CustUserId[50];
     float Price, CustFinalPrice;
-    char* MovieName();
     int Seats;
     char ID[15];
     bool Status;
 
 }Choice;
-char *MOVIE::MovieName()
-{
-    return Mn;
-}
+
 class CUSTOMER
 {
     char Password[50];
@@ -82,6 +78,9 @@ public:
 
 
 };
+
+/**************************************************************DEFINITIONS*********************************************************/
+
 CUSTOMER::CUSTOMER()
 {
 	for(int i=0;i<25;i++)
@@ -220,9 +219,9 @@ TextBox::TextBox(int x, int y, int width, int height, char caption[],int Align,i
     Callback=callback;
     int i;
 	for(i=0;i<strlen(Caption);i++)
-        HiddenText[i] = '*';
+	HiddenText[i] = '*';
 	HiddenText[i]=0;
-}               
+}
 
 void TextBox::Draw()
 {
@@ -232,11 +231,11 @@ void TextBox::Draw()
     gotoxy(X,Y);
     char w[100] = " ";
     char h[100] = " ";
-	h[0] = char(179);
+    h[0] = char(179);
     for(int i = 0;i<Width;i++)
     {
-        w[i]=char(196);
-        //cprintf("-");
+	w[i]=char(196);
+	//cprintf("-");
 	h[i+1] = ' ';
     }
     h[a] = char(179);
@@ -244,9 +243,9 @@ void TextBox::Draw()
     n++;
     for(int j = 0;j<Height;j++)
     {
-        gotoxy(X,n);
+	gotoxy(X,n);
 	cprintf(h);
-        n++;
+	n++;
     }
     gotoxy(X,n);
     cprintf(w);
@@ -267,13 +266,15 @@ void TextBox::Highlight(char a)
     //h[0] = char(179);
 	for(int i = 0;i<Width;i++)
 	{
-         w[i] = a;
-         //h[i+1] = ' ';
-    }   
+	 w[i] = a;
+	 //h[i+1] = ' ';
+	}
     //h[a] = char(179);
-	textcolor(RED);
+    textcolor(RED);
+    //gotoxy(X,Y);
+    //cprintf(w);
     gotoxy(X,Y);
-    cprintf("%c",h);
+    cprintf(w);
     gotoxy(X+Width-1,Y+1);
     cprintf("%c",h);
     gotoxy(X,Y+1);
@@ -289,9 +290,9 @@ void TextBox::Highlight(char a)
 	textcolor(RED);
     gotoxy(X,Y);
     cprintf(w);
-	gotoxy(X,Y+Height+1);
-	cprintf(w);
-	gotoxy(X+Width-1,Y+1);
+    gotoxy(X,Y+Height+1);
+    cprintf(w);
+    gotoxy(X+Width-1,Y+1);
     cprintf("%c",h);
     gotoxy(X,Y+1);
     cprintf("%c",h);
@@ -350,7 +351,7 @@ void TextBox::Highlight(char a)
     _setcursortype(_NOCURSOR);
     char w[70] = " ";
 	for(int i = 0;i<Width;i++)
-        w[i] = a;
+	w[i] = a;
     textcolor(RED);
     gotoxy(X,Y);
     cprintf(w);
@@ -454,7 +455,7 @@ void Seat::Draw(int color)
         cprintf("%c",177);
     }
 	else{
-        textcolor(color);
+	textcolor(color);
         cprintf("%c",177);
     }
     window(1,1,80,25);
@@ -493,7 +494,7 @@ public:
 	for(int i=0;i<25;i++)
         {
 		textbox[i]= NULL;
-        }
+	}
     }
     void Drawbox(int l,int b,int x ,int y,char text[]);
     void Highlight(int l, int b,int x , int y , char a);
@@ -506,7 +507,7 @@ public:
             delete menubar;
 	    for(int i = 0;i<itemnumber;i++)
 		delete textbox[i];
-            if(debug_mode)
+	    if(debug_mode)
             {
 		cout<<Caption<<"deleted";
                 getch();
@@ -532,8 +533,8 @@ void Menu::Drawbox(int l,int b,int x ,int y,char text[])
     n++;
     for(int j = 0 ;j<b;j++)
 	{
-        gotoxy(x,n);
-        cprintf(h);
+	gotoxy(x,n);
+	cprintf(h);
 	n++;
     }
     gotoxy(x,n);
@@ -553,7 +554,7 @@ void Menu::Highlight(int l, int b,int x , int y , char a)
     int m = x,n=y;
     char w[70] = " ";
     for(int i = 0;i<l;i++)
-        w[i] = a;
+	w[i] = a;
     textcolor(RED);
     gotoxy(m,n+b+1);
     cprintf(w);
@@ -566,9 +567,9 @@ void Menu::Draw()
     menubar->Draw();
     for(int i=0;i<=itemnumber;i++)
     {
-        textbox[i]->Draw();
+	textbox[i]->Draw();
     }
-    textbox[currentitem]->Highlight(char(196));
+    textbox[currentitem]->Highlight(char(205));
 }
 int Menu::ReturnID(int current_item)
 {
@@ -579,33 +580,33 @@ void Menu::Scroll(int current_item,int dir)
     textbox[current_item]->Draw();
     switch(dir)
 	{
-        case DOWN:
+	case DOWN:
 	{
-        if(current_item<itemnumber)
-        {
+	if(current_item<itemnumber)
+	{
 		 currentitem++;
-             textbox[(current_item+1)]->Highlight(char(205));
-        }
+	     textbox[(current_item+1)]->Highlight(char(205));
+	}
 	else if(current_item ==itemnumber)
-        {
+	{
 	     currentitem = 0;
 	     textbox[currentitem]->Highlight(char(205));
 	}
 	}
-          break;
+	  break;
 	  case UP:
-           {
-        if(current_item>0)
+	   {
+	if(current_item>0)
 	{
-             currentitem--;
-             textbox[currentitem]->Highlight(char(205));
+	     currentitem--;
+	     textbox[currentitem]->Highlight(char(205));
 	}
-        else if(currentitem == 0)
+	else if(currentitem == 0)
 	{
 	     currentitem = itemnumber;
 	     textbox[currentitem]->Highlight(char(205));
 	}
-           }
+	   }
 	break;
     }
 }
@@ -620,39 +621,39 @@ int Navigate(Menu menu)
     int p;
     do
     {
-        a=getch();
-        switch(tolower(a))
+	a=getch();
+	switch(tolower(a))
 	{
-            case 0:
-            {
+	    case 0:
+	    {
 	    b = getch();
-            switch(b)
+	    switch(b)
 	    {
 		case DOWN:
 		case LEFT://sahi hai mere bhai
 		{
-                    menu.Scroll(currentitem,DOWN); 
+		    menu.Scroll(currentitem,DOWN);
 
-        }
-                break;
+	}
+		break;
 		case UP:
-                case RIGHT:
-                {
+		case RIGHT:
+		{
 		    menu.Scroll(currentitem,UP);
-                    
+
 		}
 		break;
 	    }// switch b ends
 	    }// case :0 ends
-            break;
-	    case 13:{
-                return menu.ReturnID(currentitem);
-            }
-		break;
-            case 'e':
-            exit(0);
 	    break;
-            // default:
+	    case 13:{
+		return menu.ReturnID(currentitem);
+	    }
+		break;
+	    case 'e':
+	    exit(0);
+	    break;
+	    // default:
 	    //     return (int)a;
 	    // break;
 	}// switch a ends
@@ -835,9 +836,9 @@ void Customerlogin()
     cout<<"Username: ";
     gotoxy(18,9);
     cout<<"Password: ";
-    TextBox *pUsername = new TextBox(30,5,20,1,"",0,YELLOW,0,Customerlogin);
-    TextBox *pPassword = new TextBox(30,8,20,1,"",0,GREEN,1,Customerlogin);
-    TextBox *pCustomerSignUp = new TextBox(30,11,20,1,"New Here, SIGN UP",4,LIGHTGREEN,1,CustomerSignUp);
+    TextBox *pUsername = new TextBox(30,5,20,1,"",0,LIGHTGREEN,0,Customerlogin);
+    TextBox *pPassword = new TextBox(30,8,20,1,"",0,LIGHTGREEN,1,Customerlogin);
+    TextBox *pCustomerSignUp = new TextBox(30,11,20,1,"New Here, SIGN UP",4,LIGHTCYAN,1,CustomerSignUp);
     TextBox *pNext = new TextBox(50,15,20,1,"NEXT",0,CYAN,2,welcome);
     TextBox *pBack = new TextBox(10,15,20,1,"BACK",0,CYAN,3,welcome);
     pUsername->SetReadOnly(false);
@@ -883,8 +884,8 @@ void AdminLogin()
     cout<<"Username: ";
     gotoxy(18,9);
 	cout<<"Password: ";
-    TextBox *pUsername = new TextBox(30,5,20,1,"",0,YELLOW,0,AdminLogin);
-    TextBox *pPassword = new TextBox(30,8,20,1,"",0,GREEN,1,AdminLogin);
+    TextBox *pUsername = new TextBox(30,5,20,1,"",0,LIGHTGREEN,0,AdminLogin);
+    TextBox *pPassword = new TextBox(30,8,20,1,"",0,LIGHTGREEN,1,AdminLogin);
     TextBox *pNext = new TextBox(50,12,20,1,"NEXT",0,CYAN,2,AdminHome);
     TextBox *pBack = new TextBox(10,12,20,1,"BACK",0,CYAN,3,welcome);
     pUsername->SetReadOnly(false);
@@ -928,9 +929,9 @@ void AdminHome()
 {
     clrscr();
     _setcursortype(_NOCURSOR);
-	TextBox *M_Settings = new TextBox(25,5,30,1,"Movie Settings",0,YELLOW,0,Movie_Settings);
-	TextBox *T_Settings = new TextBox(25,8,30,1,"View All Bookings",0,YELLOW,1,AllBookings);
-	TextBox *D_Settings = new TextBox(25,11,30,1,"Database Settings",0,YELLOW,2,Database_Settings);
+	TextBox *M_Settings = new TextBox(25,5,30,1,"Movie Settings",0,LIGHTBLUE,0,Movie_Settings);
+	TextBox *T_Settings = new TextBox(25,8,30,1,"View All Bookings",0,LIGHTBLUE,1,AllBookings);
+	TextBox *D_Settings = new TextBox(25,11,30,1,"Database Settings",0,LIGHTBLUE,2,Database_Settings);
 	TextBox *pAbout = new TextBox(25,14,30,1,"ABOUT",0,CYAN,3,about);
 	TextBox *pBack = new TextBox(1,23,20,1,"BACK",0,CYAN,4,AdminLogin);
 	Menu mAdminHome(3,"Hello Admin");
@@ -973,10 +974,10 @@ void CustomerIndex()
 {
 	clrscr();
 	_setcursortype(_NOCURSOR);
-	TextBox *NewT = new TextBox(25,6,30,1,"Book New Ticket",0,YELLOW,0,CustomerHome);
-	TextBox *CancelT = new TextBox(25,9,30,1,"Cancel Ticket",0,YELLOW,1,CancelTicket);
-	TextBox *CBStatus = new TextBox(25,12,30,1,"Change Password",0,YELLOW,2,ChangePassword);
-	TextBox *VBHistory = new TextBox(25,15,30,1,"View Booking History",0,YELLOW,3,ViewBookingHistory);
+	TextBox *NewT = new TextBox(25,6,30,1,"Book New Ticket",0,LIGHTCYAN,0,CustomerHome);
+	TextBox *CancelT = new TextBox(25,9,30,1,"Cancel Ticket",0,LIGHTCYAN,1,CancelTicket);
+	TextBox *CBStatus = new TextBox(25,12,30,1,"Change Password",0,LIGHTCYAN,2,ChangePassword);
+	TextBox *VBHistory = new TextBox(25,15,30,1,"View Booking History",0,LIGHTCYAN,3,ViewBookingHistory);
 	TextBox *ciBack = new TextBox(1,23,20,1,"Sign Out",0,CYAN,4,Customerlogin);
 
 	Menu mCustomerIndex(4,"Customer Home");
@@ -1101,29 +1102,29 @@ void Movie_Settings()
     cprintf("%s","Movie 1 :");
     gotoxy(25,4);
     cprintf("%s","NAME");
-    TextBox *pName1 = new TextBox(11,5,68,1,"NAME",0,YELLOW,0,welcome);
+    TextBox *pName1 = new TextBox(11,5,68,1,"",0,YELLOW,0,welcome);
     pName1->SetReadOnly(false);
     gotoxy(11,8);
     cprintf("%s","Timings");
-    TextBox *pTime1 = new TextBox(11,9,10,1,"TIME",0,YELLOW,1,welcome);
+    TextBox *pTime1 = new TextBox(11,9,10,1,"",0,YELLOW,1,welcome);
     pTime1->SetReadOnly(false);
     gotoxy(24,8);
     cprintf("%s","Price");
-    TextBox *pPrice1 = new TextBox(24,9,10,1,"PRICE",0,YELLOW,2,welcome);
+    TextBox *pPrice1 = new TextBox(24,9,10,1,"",0,YELLOW,2,welcome);
     pPrice1->SetReadOnly(false);
     gotoxy(1,13);
     cprintf("%s","Movie 2 :");
     gotoxy(25,13);
     cprintf("%s","NAME");
-    TextBox *pName2 = new TextBox(11,14,68,1,"NAME",0,YELLOW,3,welcome);
+    TextBox *pName2 = new TextBox(11,14,68,1,"",0,YELLOW,3,welcome);
     pName2->SetReadOnly(false);
     gotoxy(11,17);
     cprintf("%s","Timings");
-    TextBox *pTime2 = new TextBox(11,18,10,1,"TIME",0,YELLOW,4,welcome);
+    TextBox *pTime2 = new TextBox(11,18,10,1,"",0,YELLOW,4,welcome);
     pTime2->SetReadOnly(false);
     gotoxy(24,17);
     cprintf("%s","Price");
-    TextBox *pPrice2 = new TextBox(24,18,10,1,"PRICE",0,YELLOW,5,welcome);
+    TextBox *pPrice2 = new TextBox(24,18,10,1,"",0,YELLOW,5,welcome);
     pPrice2->SetReadOnly(false);
 
     TextBox *pSubmit = new TextBox(50,23,20,1,"SUBMIT",0,CYAN,6,AdminHome);
@@ -1227,15 +1228,15 @@ void Database_Settings()
     cprintf("%s","Movie :");
     gotoxy(11,8);
     cprintf("%s","Name");
-    TextBox *pName1 = new TextBox(11,9,68,1,"NAME",0,YELLOW,0,welcome);
+    TextBox *pName1 = new TextBox(11,9,68,1,"",0,YELLOW,0,welcome);
     pName1->SetReadOnly(false);
     gotoxy(11,12);
     cprintf("%s","Timings");
-    TextBox *pTime1 = new TextBox(11,13,10,1,"TIME",0,YELLOW,1,welcome);
+    TextBox *pTime1 = new TextBox(11,13,10,1,"",0,YELLOW,1,welcome);
     pTime1->SetReadOnly(false);
     gotoxy(24,12);
     cprintf("%s","Price");
-    TextBox *pPrice1 = new TextBox(24,13,10,1,"PRICE",0,YELLOW,2,welcome);
+    TextBox *pPrice1 = new TextBox(24,13,10,1,"",0,YELLOW,2,welcome);
     pPrice1->SetReadOnly(false);
     // gotoxy(1,13);
     // cprintf("%s","Movie 2 :");
@@ -2082,15 +2083,61 @@ void about()
     mAbout.AddItem(aBack);
     mAbout.Draw();
     char ty[30]={'T','h','a','n','k','s',' ','f','o','r',' ','U','s','i','n','g',' ','M','o','v','i','e',' ','T','i','m','e','!'};
-    PrintLogo(6);
+    int s=0;
+    char slant[]={char(178),char(178),char(178),char(178),char(178),char(178),char(178)};
+    textcolor(RED);
+    for(int j=0;j<20;j++)
+    {
+	//h[j]=char(219);
+	gotoxy(30+j,13);
+	cprintf("%c",178);
+	gotoxy(30+j,8);
+	cprintf("%c",178);
+	gotoxy(30+j,10);
+	cprintf("%c",95);
+	delay(65);
+    }
+    for(j=0;j<=5;j++)
+    {
+	gotoxy(30,8+j);
+	cprintf("%c",178);
+	gotoxy(50,8+j);
+	cprintf("%c",178);
+	delay(60);
+    }
+    gotoxy(30,7);
+    cprintf("%c",220);
+    cprintf("%c",220);
+    for(j=0;j<=2;j++)
+    {
+	gotoxy(32+s,7-j);
+	cprintf("%s",slant);
+	s+=6;
+	delay(60);
+    }
+    for(j=0;j<=1;j++)
+    {
+	gotoxy(37,11+j);
+	cprintf("%c",179);
+	delay(50);
+    }
+    for(j=0;j<=1;j++)
+    {
+	gotoxy(44,11+j);
+	cprintf("%c",179);
+	delay(50);
+    }
+    textcolor(WHITE);
+
+    PrintLogo(15);
     for(int p=0;p<30;p++)
     {
-	gotoxy(28+p,15);
+	gotoxy(28+p,22);
 	textcolor(CYAN);
 	cprintf("%c",ty[p]);
-	delay(150);
+	delay(100);
     }
-    gotoxy(27,17);
+    gotoxy(27,23);
     textcolor(GREEN);
     cprintf("Presented By Shaurya And Rishit");
     switch(Navigate(mAbout))
@@ -2101,6 +2148,8 @@ void about()
 
 }
 
+
+/*******************************************************MAIN*************************************************/
 void main()
 {
      int p=0,q=0,r=0,i=1;
@@ -2109,15 +2158,15 @@ void main()
     while(p<25)
     {
 	for(q = 0;q<5;q++)
-            {
+	    {
 		seat[p] = new Seat(20+(10*q),4+r,YELLOW,GREEN,p,a,i);
-                seat[p]->Occupied= false;
-				p++;
-                i++;
-            }
-        r+=4;
-        a++;
-        i=1;
+		seat[p]->Occupied= false;
+		p++;
+		i++;
+	    }
+	r+=4;
+	a++;
+	i=1;
     }
     // for(p =0;p<25;p++)
     // {
@@ -2128,9 +2177,10 @@ void main()
     //EnterSeats();
     for(p =0;p<25;p++)
     {
-        delete seat[p];
+	delete seat[p];
     }
     clrscr();
     cout<<"Thank You!";
     getch();
 }
+
